@@ -11,7 +11,7 @@
         "wechat pay"
     ],
     "type": "library",
-    "license": "MulanPSL",
+    "license": "MIT",
     "authors": [
         {
             "name": "Yanlong-li",
