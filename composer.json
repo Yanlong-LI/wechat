@@ -23,11 +23,9 @@
         "issues": "https://gitee.com/yanlong-li/wechat/issues",
         "forum": "https://gitee.com/yanlong-li/wechat/issues",
         "wiki": "https://gitee.com/yanlong-li/wechat/wikis",
-        "irc": "https://gitee.com/yanlong-li/wechat/issues",
         "source": "https://gitee.com/yanlong-li/wechat",
         "email": "admin@yanlongli.com",
-        "docs": "https://gitee.com/yanlong-li/wechat/wikis",
-        "rss": "https://gitee.com/yanlong-li/wechat/wikis"
+        "docs": "https://gitee.com/yanlong-li/wechat/wikis"
     },
     "minimum-stability": "stable",
     "require": {
