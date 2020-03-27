@@ -1,5 +1,17 @@
 <?php
 /**
+ * Copyright (c) [2020] [Yanlongli <jobs@yanlongli.com>]
+ * [Wechat] is licensed under Mulan PSL v2.
+ * You can use this software according to the terms and conditions of the Mulan PSL v2.
+ * You may obtain a copy of Mulan PSL v2 at:
+ * http://license.coscl.org.cn/MulanPSL2
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+ * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+ * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * See the Mulan PSL v2 for more details.
+ */
+
+/**
  *   Author: Yanlongli <ahlyl94@gmail.com>
  *   Date:   2019/8/2
  *   IDE:    PhpStorm
@@ -9,6 +21,8 @@
 
 namespace yanlongli\wechat\support;
 
+
+use InvalidArgumentException;
 
 class Request
 {
@@ -134,29 +148,25 @@ class Request
                 $contentType = $rawContentType;
             }
             $data = null;
-            try {
-                switch ($contentType) {
-                    case 'application/json':
-                        $data = file_get_contents('php://input');
-                        $data = json_decode($data, true);
-                        break;
-                    case 'application/xml':
-                    case 'text/xml':
-                        $data = file_get_contents('php://input');
-                        $data = self::xmlToArray($data);
-                        break;
-                    case 'text/plain':
-                    case 'application/javascript':
-                    case 'text/html':
-                        break;
-                    case 'multipart/form-data':
-                    default:
-                        $data = $_POST;
-                        break;
+            switch ($contentType) {
+                case 'application/json':
+                    $data = file_get_contents('php://input');
+                    $data = json_decode($data, true);
+                    break;
+                case 'application/xml':
+                case 'text/xml':
+                    $data = file_get_contents('php://input');
+                    $data = self::xmlToArray($data);
+                    break;
+                case 'text/plain':
+                case 'application/javascript':
+                case 'text/html':
+                    break;
+                case 'multipart/form-data':
+                default:
+                    $data = $_POST;
+                    break;
 
-                }
-            } catch (\Exception $exception) {
-                // 修复如果解析报错则返回空数组，出现在xml或json格式不合法问题
             }
             self::$post = $data;
         }
@@ -232,7 +242,7 @@ class Request
                 if (is_scalar($value)) {
                     $_value = (string)$value;
                 } else {
-                    throw new \InvalidArgumentException('variable type error：' . gettype($value));
+                    throw new InvalidArgumentException('variable type error：' . gettype($value));
                 }
                 break;
             case 'd':

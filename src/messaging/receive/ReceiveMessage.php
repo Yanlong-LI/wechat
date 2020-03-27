@@ -1,33 +1,28 @@
 <?php
 /**
- *   Copyright (c) [2019] [Yanlongli <jobs@yanlongli.com>]
- *   [Wechat] is licensed under the Mulan PSL v1.
- *   You can use this software according to the terms and conditions of the Mulan PSL v1.
- *   You may obtain a copy of Mulan PSL v1 at:
- *       http://license.coscl.org.cn/MulanPSL
- *   THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR
- *   IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
- *   PURPOSE.
- *   See the Mulan PSL v1 for more details.
- *
- *   Author: Yanlongli <jobs@yanlongli.com>
- *   Date:   2019/11/14
- *   IDE:    PhpStorm
- *   Desc:  收到消息基础
+ * Copyright (c) [2020] [Yanlongli <jobs@yanlongli.com>]
+ * [Wechat] is licensed under Mulan PSL v2.
+ * You can use this software according to the terms and conditions of the Mulan PSL v2.
+ * You may obtain a copy of Mulan PSL v2 at:
+ * http://license.coscl.org.cn/MulanPSL2
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+ * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+ * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * See the Mulan PSL v2 for more details.
  */
 declare(strict_types=1);
 
 namespace yanlongli\wechat\messaging\receive;
 
 
-use yanlongli\wechat\messaging\contract\ReplyMessage;
 use yanlongli\wechat\messaging\contract\Message;
-use yanlongli\wechat\WechatException;
-use yanlongli\wechat\messaging\receive\event\Subscribe;
+use yanlongli\wechat\messaging\contract\ReplyMessage;
 use yanlongli\wechat\messaging\receive\event\QRScene;
+use yanlongli\wechat\messaging\receive\event\Subscribe;
+use yanlongli\wechat\WechatException;
 
 /**
- * Class Receive
+ * Class Receive 收到消息 包括事件消息和普通消息
  * @package yanlongli\wechat\messaging\receive
  * @property string $FromUserName 发送方帐号(OpenID)
  * @property string $ToUserName 公众号原始id

@@ -17,40 +17,33 @@ namespace yanlongli\wechat\messaging\message;
 use yanlongli\wechat\messaging\contract\CallMessage;
 
 /**
- * Class WxCard 发送卡券
+ * Class Typing 打字消息
  * @package yanlongli\wechat\messaging\message
- * @author  Zou Yiliang
- * @license MIT
- * 客服消息接口投放卡券仅支持非自定义Code码和导入code模式的卡券的卡券
- * http://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1451025056&token=&lang=zh_CN&anchor=2.2.2
  */
-class WxCard implements CallMessage
+class Typing implements CallMessage
 {
-    protected string $type = 'wxcard';
-    protected string $cardId;
+    const TYPING = 'Typing';
+    const CANCEL_TYPING = 'CancelTyping';
 
-    public function __construct(string $cardId)
-    {
-        $this->cardId = $cardId;
-    }
+    protected string $type = 'Typing';
 
     /**
-     * @return string
+     * Typing constructor.
+     * @param string $type
      */
+    public function __construct(string $type = self::TYPING)
+    {
+        $this->type = $type;
+    }
+
+
+    public function jsonData()
+    {
+        return [];
+    }
+
     public function type()
     {
         return $this->type;
-    }
-
-    /**
-     * @return array
-     */
-    public function jsonData()
-    {
-        return array(
-            'wxcard' => array(
-                'card_id' => $this->cardId,
-            ),
-        );
     }
 }

@@ -9,7 +9,9 @@
 
 
 ### 更新日志
-
+    
+    2020年3月27日
+    更新许可协议为MulanPSL2
 
     2020年1月3日
     去除 irc 值
@@ -71,7 +73,7 @@
 ### 说明 
 本项目采用中国 木兰开源许可协议 
 
-大部分代码及处理方式逻辑来自 pfinal/wechat 更多信息请访问 [pfinal/wechat](https://github.com/pfinal/wechat)
+部分代码及处理方式逻辑来自 [pfinal/wechat](https://github.com/pfinal/wechat)
 
 
 ### 文档目录

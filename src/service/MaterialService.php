@@ -1,23 +1,19 @@
 <?php
 /**
- *   Copyright (c) [2019] [Yanlongli <jobs@yanlongli.com>]
- *   [Wechat] is licensed under the Mulan PSL v1.
- *   You can use this software according to the terms and conditions of the Mulan PSL v1.
- *   You may obtain a copy of Mulan PSL v1 at:
- *       http://license.coscl.org.cn/MulanPSL
- *   THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR
- *   IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
- *   PURPOSE.
- *   See the Mulan PSL v1 for more details.
- *
- *   Author: Yanlongli <jobs@yanlongli.com>、Zou Yiliang<>
- *   Date:   2019/11/13
- *   IDE:    PhpStorm
- *   Desc:
+ * Copyright (c) [2020] [Yanlongli <jobs@yanlongli.com>]
+ * [Wechat] is licensed under Mulan PSL v2.
+ * You can use this software according to the terms and conditions of the Mulan PSL v2.
+ * You may obtain a copy of Mulan PSL v2 at:
+ * http://license.coscl.org.cn/MulanPSL2
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+ * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+ * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * See the Mulan PSL v2 for more details.
  */
 
 namespace yanlongli\wechat\service;
 
+use CURLFile;
 use yanlongli\wechat\App;
 use yanlongli\wechat\support\Json;
 use yanlongli\wechat\WechatException;
@@ -47,7 +43,7 @@ class MaterialService extends BaseService
 
         //PHP 5.6 禁用了 '@/path/filename' 语法上传文件
         if (class_exists('\CURLFile')) {
-            $data['media'] = new \CURLFile($filename);
+            $data['media'] = new CURLFile($filename);
         } else {
             $data['media'] = '@' . $filename;
         }
@@ -74,7 +70,7 @@ class MaterialService extends BaseService
         $filename = realpath($filename);
 
         if (class_exists('\CURLFile')) {
-            $data['media'] = new \CURLFile($filename);
+            $data['media'] = new CURLFile($filename);
         } else {
             $data['media'] = '@' . $filename;
         }
@@ -179,7 +175,7 @@ class MaterialService extends BaseService
         $filename = realpath($filename);
 
         if (class_exists('\CURLFile')) {
-            $data['media'] = new \CURLFile($filename);
+            $data['media'] = new CURLFile($filename);
         } else {
             $data['media'] = '@' . $filename;
         }

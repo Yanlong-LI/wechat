@@ -1,35 +1,31 @@
 <?php
 /**
- *   Copyright (c) [2019] [Yanlongli <jobs@yanlongli.com>]
- *   [Wechat] is licensed under the Mulan PSL v1.
- *   You can use this software according to the terms and conditions of the Mulan PSL v1.
- *   You may obtain a copy of Mulan PSL v1 at:
- *       http://license.coscl.org.cn/MulanPSL
- *   THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR
- *   IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
- *   PURPOSE.
- *   See the Mulan PSL v1 for more details.
- *
- *   Author: Yanlongli <jobs@yanlongli.com>
- *   Date:   2019/11/20
- *   IDE:    PhpStorm
- *   Desc:   服务抽象类
- *      注意，小程序服务收到的时json格式数据，不支持xml，公众号收到的时xml格式不支持json
+ * Copyright (c) [2020] [Yanlongli <jobs@yanlongli.com>]
+ * [Wechat] is licensed under Mulan PSL v2.
+ * You can use this software according to the terms and conditions of the Mulan PSL v2.
+ * You may obtain a copy of Mulan PSL v2 at:
+ * http://license.coscl.org.cn/MulanPSL2
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+ * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+ * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * See the Mulan PSL v2 for more details.
  */
 declare(strict_types=1);
 
 namespace yanlongli\wechat;
 
-use yanlongli\wechat\support\Request;
-use yanlongli\wechat\messaging\receive\EventMessage;
-use yanlongli\wechat\messaging\contract\ReplyMessage;
-use yanlongli\wechat\messaging\receive\ReceiveMessage;
-use yanlongli\wechat\support\Xml;
-use yanlongli\wechat\sdk\WXBizMsgCrypt;
-use yanlongli\wechat\officialAccount\OfficialAccount;
-use yanlongli\wechat\support\Json;
-use yanlongli\wechat\miniProgram\MiniProgram;
+use Exception;
+use ReflectionException;
 use ReflectionFunction;
+use yanlongli\wechat\messaging\contract\ReplyMessage;
+use yanlongli\wechat\messaging\receive\EventMessage;
+use yanlongli\wechat\messaging\receive\ReceiveMessage;
+use yanlongli\wechat\miniProgram\MiniProgram;
+use yanlongli\wechat\officialAccount\OfficialAccount;
+use yanlongli\wechat\sdk\WXBizMsgCrypt;
+use yanlongli\wechat\support\Json;
+use yanlongli\wechat\support\Request;
+use yanlongli\wechat\support\Xml;
 
 /**
  * Class Service
@@ -104,7 +100,7 @@ abstract class Service
     /**
      * 注册事件处理函数
      * @param callable $function
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @see 没有优先级控制，请按照先后顺序进行注册
      */
     public function register(callable $function): void
@@ -244,7 +240,7 @@ abstract class Service
      * @param string $message
      * @return string
      * @throws WechatException
-     * @throws \Exception
+     * @throws Exception
      */
     protected function attemptDecrypt($message)
     {

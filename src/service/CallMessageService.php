@@ -1,19 +1,14 @@
 <?php
 /**
- *   Copyright (c) [2019] [Yanlongli <jobs@yanlongli.com>]
- *   [Wechat] is licensed under the Mulan PSL v1.
- *   You can use this software according to the terms and conditions of the Mulan PSL v1.
- *   You may obtain a copy of Mulan PSL v1 at:
- *       http://license.coscl.org.cn/MulanPSL
- *   THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR
- *   IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
- *   PURPOSE.
- *   See the Mulan PSL v1 for more details.
- *
- *   Author: Yanlongli <jobs@yanlongli.com>、Zou Yiliang<>
- *   Date:   2019/11/13
- *   IDE:    PhpStorm
- *   Desc:
+ * Copyright (c) [2020] [Yanlongli <jobs@yanlongli.com>]
+ * [Wechat] is licensed under Mulan PSL v2.
+ * You can use this software according to the terms and conditions of the Mulan PSL v2.
+ * You may obtain a copy of Mulan PSL v2 at:
+ * http://license.coscl.org.cn/MulanPSL2
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+ * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+ * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * See the Mulan PSL v2 for more details.
  */
 declare(strict_types=1);
 
@@ -22,10 +17,11 @@ namespace yanlongli\wechat\service;
 use yanlongli\wechat\App;
 use yanlongli\wechat\messaging\contract\CallMessage;
 use yanlongli\wechat\messaging\contract\MassMessage;
+use yanlongli\wechat\messaging\message\Typing;
 use yanlongli\wechat\WechatException;
 
 /**
- * Trait CallMessageService
+ * Trait CallMessageService 客服服务
  * @package yanlongli\wechat\service
  */
 class CallMessageService extends BaseService
@@ -57,6 +53,28 @@ class CallMessageService extends BaseService
         }
 
         $url = 'https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=ACCESS_TOKEN';
+
+        return parent::request($url, $app, $data);
+    }
+
+    /**
+     * 打字状态下发
+     * @param App $app
+     * @param string $openid
+     * @param Typing $message
+     * @param string $account 客服帐号(显示客服自定义头像)
+     * @return array
+     * @throws WechatException
+     */
+    public static function Typing(App $app, string $openid, Typing $message, string $account = null)
+    {
+        $type = $message->type();
+        $data = array(
+            'touser' => $openid,
+            'command' => $type,
+        );
+
+        $url = 'https://api.weixin.qq.com/cgi-bin/message/custom/typing?access_token=ACCESS_TOKEN';
 
         return parent::request($url, $app, $data);
     }

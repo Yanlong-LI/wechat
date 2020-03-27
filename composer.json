@@ -1,59 +1,59 @@
 {
-    "name": "yanlongli/wechat",
-    "description": "希望打造一个尽量全面的微信平台管理工具，包含公众号、小程序、微信商户、移动app、网站app等。",
-    "keywords": [
-        "wechat",
-        "微信",
-        "公众号",
-        "小程序",
-        "微信商户",
-        "微信支付",
-        "wechat pay"
-    ],
-    "type": "library",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Yanlong-li",
-            "email": "ahlyl94@gmail.com"
-        }
-    ],
-    "homepage": "https://wechat.yanlongli.com/",
-    "support": {
-        "issues": "https://gitee.com/yanlong-li/wechat/issues",
-        "forum": "https://gitee.com/yanlong-li/wechat/issues",
-        "wiki": "https://gitee.com/yanlong-li/wechat/wikis",
-        "source": "https://gitee.com/yanlong-li/wechat",
-        "email": "admin@yanlongli.com",
-        "docs": "https://gitee.com/yanlong-li/wechat/wikis"
-    },
-    "minimum-stability": "stable",
-    "require": {
-        "php": ">=7.4.1",
-        "ext-curl": "*",
-        "ext-json": "*",
-        "ext-iconv": "*",
-        "ext-simplexml": "*",
-        "ext-libxml": "*",
-        "ext-openssl": "*",
-        "ext-dom": "*"
-    },
-    "autoload": {
-        "psr-4": {
-            "yanlongli\\wechat\\": "src/"
-        }
-    },
-    "scripts": {
-        "post-autoload-dump": [
-            "@php wechat.php service:discover"
-        ]
-    },
-    "scripts-descriptions": {
-    },
-    "repositories": {
-        "packagist": {
-            "type": "composer",
-            "url": "https://mirrors.aliyun.com/composer/"
-        }
+  "name": "yanlongli/wechat",
+  "description": "希望打造一个尽量全面的微信平台管理工具，包含公众号、小程序、微信商户、移动app、网站app等。",
+  "keywords": [
+    "wechat",
+    "微信",
+    "公众号",
+    "小程序",
+    "微信商户",
+    "微信支付",
+    "wechat pay"
+  ],
+  "type": "library",
+  "license": "MulanPSL2",
+  "authors": [
+    {
+      "name": "Yanlong-li",
+      "email": "ahlyl94@gmail.com"
     }
+  ],
+  "homepage": "https://wechat.yanlongli.com/",
+  "support": {
+    "issues": "https://gitee.com/yanlong-li/wechat/issues",
+    "forum": "https://gitee.com/yanlong-li/wechat/issues",
+    "wiki": "https://gitee.com/yanlong-li/wechat/wikis",
+    "source": "https://gitee.com/yanlong-li/wechat",
+    "email": "admin@yanlongli.com",
+    "docs": "https://gitee.com/yanlong-li/wechat/wikis"
+  },
+  "minimum-stability": "stable",
+  "require": {
+    "php": ">=7.4.1",
+    "ext-curl": "*",
+    "ext-json": "*",
+    "ext-iconv": "*",
+    "ext-simplexml": "*",
+    "ext-libxml": "*",
+    "ext-openssl": "*",
+    "ext-dom": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "yanlongli\\wechat\\": "src/"
+    }
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "@php wechat service:discover"
+    ]
+  },
+  "scripts-descriptions": {
+  },
+  "repositories": {
+    "packagist": {
+      "type": "composer",
+      "url": "https://mirrors.aliyun.com/composer/"
+    }
+  }
 }

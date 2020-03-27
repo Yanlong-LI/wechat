@@ -1,50 +1,45 @@
 <?php
 /**
- *   Copyright (c) [2019] [Yanlongli <jobs@yanlongli.com>]
- *   [Wechat] is licensed under the Mulan PSL v1.
- *   You can use this software according to the terms and conditions of the Mulan PSL v1.
- *   You may obtain a copy of Mulan PSL v1 at:
- *       http://license.coscl.org.cn/MulanPSL
- *   THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR
- *   IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
- *   PURPOSE.
- *   See the Mulan PSL v1 for more details.
- *
- *   Author: Yanlongli <jobs@yanlongli.com>
- *   Date:   2019/11/20
- *   IDE:    PhpStorm
- *   Desc:   服务器监听事件演示demo
+ * Copyright (c) [2020] [Yanlongli <jobs@yanlongli.com>]
+ * [Wechat] is licensed under Mulan PSL v2.
+ * You can use this software according to the terms and conditions of the Mulan PSL v2.
+ * You may obtain a copy of Mulan PSL v2 at:
+ * http://license.coscl.org.cn/MulanPSL2
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+ * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+ * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * See the Mulan PSL v2 for more details.
  */
 declare(strict_types=1);
 
-use yanlongli\wechat\WechatException;
-use yanlongli\wechat\support\Config;
-use yanlongli\wechat\officialAccount\OfficialAccount;
-use yanlongli\wechat\officialAccount\HandleEventService;
-use yanlongli\wechat\messaging\receive\event\Subscribe;
-use yanlongli\wechat\messaging\message\Text;
-use yanlongli\wechat\messaging\receive\general\Text as receiveText;
-use yanlongli\wechat\messaging\message\Image;
-use yanlongli\wechat\messaging\receive\general\Image as receiveImage;
-use yanlongli\wechat\messaging\receive\general\Location as receiveLocation;
-use yanlongli\wechat\messaging\receive\event\Location as receiveEventLocation;
-use yanlongli\wechat\service\CallMessageService;
 use yanlongli\wechat\messaging\contract\ReplyMessage;
-use yanlongli\wechat\messaging\receive\ReceiveMessage;
-use yanlongli\wechat\messaging\receive\event\QRScene;
-use yanlongli\wechat\support\Request;
+use yanlongli\wechat\messaging\message\Image;
+use yanlongli\wechat\messaging\message\Text;
 use yanlongli\wechat\messaging\receive\event\Click;
+use yanlongli\wechat\messaging\receive\event\Location as receiveEventLocation;
 use yanlongli\wechat\messaging\receive\event\LocationSelect;
 use yanlongli\wechat\messaging\receive\event\PicPhotoOrAlbum;
-use yanlongli\wechat\messaging\receive\event\PicWeixin;
 use yanlongli\wechat\messaging\receive\event\PicSysPhoto;
+use yanlongli\wechat\messaging\receive\event\PicWeixin;
+use yanlongli\wechat\messaging\receive\event\QRScene;
 use yanlongli\wechat\messaging\receive\event\ScanCodePush;
 use yanlongli\wechat\messaging\receive\event\ScanCodeWaitMsg;
+use yanlongli\wechat\messaging\receive\event\Subscribe;
 use yanlongli\wechat\messaging\receive\event\View;
 use yanlongli\wechat\messaging\receive\event\ViewMiniprogram;
+use yanlongli\wechat\messaging\receive\general\Image as receiveImage;
 use yanlongli\wechat\messaging\receive\general\Link;
+use yanlongli\wechat\messaging\receive\general\Location as receiveLocation;
 use yanlongli\wechat\messaging\receive\general\ShortVideo;
+use yanlongli\wechat\messaging\receive\general\Text as receiveText;
 use yanlongli\wechat\messaging\receive\general\Video;
+use yanlongli\wechat\messaging\receive\ReceiveMessage;
+use yanlongli\wechat\officialAccount\HandleEventService;
+use yanlongli\wechat\officialAccount\OfficialAccount;
+use yanlongli\wechat\service\CallMessageService;
+use yanlongli\wechat\support\Config;
+use yanlongli\wechat\support\Request;
+use yanlongli\wechat\WechatException;
 
 
 include '../vendor/autoload.php';
