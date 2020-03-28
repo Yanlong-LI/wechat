@@ -12,16 +12,19 @@
  */
 declare(strict_types=1);
 
-namespace yanlongli\wechat\officialAccount;
+namespace yanlongli\wechat\ability\card\card;
 
-use yanlongli\wechat\ability\CustomerService;
+use yanlongli\wechat\ability\card\contract\Card;
 
-/**
- * Class EnterpriseAccount 企业号
- * @package yanlongli\wechat\officialAccount
- * @property CustomerService $CustomerService 客服消息能力
- */
-class EnterpriseAccount extends OfficialAccount
+class GeneralCard extends Card
 {
+    public string $type = 'GENERAL_CARD';
 
+    /**
+     * @inheritDoc
+     */
+    public function data()
+    {
+        // TODO: Implement data() method.
+    }
 }

@@ -17,10 +17,6 @@ namespace yanlongli\wechat\messaging\receive;
 /**
  * Interface EventMessage 事件消息
  * @package yanlongli\wechat\messaging\contract
- * @property string $FromUserName 发送方帐号(OpenID)
- * @property string $ToUserName 公众号原始id
- * @property string $CreateTime 消息创建时间(整型)
- * @property string $MsgType 消息类型
  * @property string $Event 事件类型
  */
 class EventMessage extends ReceiveMessage

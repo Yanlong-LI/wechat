@@ -12,24 +12,20 @@
  */
 declare(strict_types=1);
 
-namespace yanlongli\wechat\service\card\card;
+namespace yanlongli\wechat\messaging\receive\general;
 
-use yanlongli\wechat\service\card\contract\Card;
+use yanlongli\wechat\messaging\receive\GeneralMessage;
 
-class MemberCard extends Card
+/**
+ * Class Miniprogrampage 小程序卡片
+ * @package yanlongli\wechat\messaging\receive\event
+ * @property string $Title 标题
+ * @property string $AppId 小程序 app id
+ * @property string $PagePath 小程序页面的 path
+ * @property string $ThumbUrl 小程序封面 cdn 地址
+ * @property string $ThumbMediaId 小程序封面 media id
+ */
+class Miniprogrampage extends GeneralMessage
 {
-    public string $type = 'MEMBER_CARD';
-
-    /**
-     * @inheritDoc
-     */
-    public function data()
-    {
-        return [
-            'card_type' => $this->type,
-            'member_card' => [
-
-            ]
-        ];
-    }
+    const TYPE = 'miniprogrampage';
 }

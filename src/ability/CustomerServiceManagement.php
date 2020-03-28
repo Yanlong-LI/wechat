@@ -12,53 +12,55 @@
  */
 declare(strict_types=1);
 
-namespace yanlongli\wechat\service;
+namespace yanlongli\wechat\ability;
 
 use CURLFile;
-use yanlongli\wechat\App;
 use yanlongli\wechat\WechatException;
 
-class AccountService extends BaseService
+/**
+ * Class AccountService 多客服管理
+ * @package yanlongli\wechat\ability
+ */
+class CustomerServiceManagement extends Ability
 {
+    use Request;
+
     /**
      * 新增客服
-     * @param App $app
      * @param $account
      * @param $nickname
      * @param $password
      * @return array
      * @throws WechatException
      */
-    public static function create(App $app, string $account, string $nickname, string $password)
+    public function add(string $account, string $nickname, string $password)
     {
         $url = 'https://api.weixin.qq.com/customservice/kfaccount/add?access_token=ACCESS_TOKEN';
-        return parent::request($url, $app, compact('account', 'nickname', 'password'));
+        return $this->request($url, compact('account', 'nickname', 'password'));
     }
 
     /**
      * 更新客服资料
-     * @param App $app
-     * @param $account
-     * @param $nickname
+     * @param string $account
+     * @param string $nickname
      * @param $password
      * @return array
      * @throws WechatException
      */
-    public static function update(App $app, string $account, string $nickname, string $password)
+    public function update(string $account, string $nickname, string $password)
     {
         $url = 'https://api.weixin.qq.com/customservice/kfaccount/update?access_token=ACCESS_TOKEN';
-        return parent::request($url, $app, compact('account', 'nickname', 'password'));
+        return $this->request($url, compact('account', 'nickname', 'password'));
     }
 
     /**
      * 设置客服帐号的头像
-     * @param App $app
      * @param string $account
      * @param string $filename 头像图片文件必须是jpg格式，推荐使用640*640大小的图片以达到最佳效果
      * @return array
      * @throws WechatException
      */
-    public static function avatar(App $app, string $account, string $filename)
+    public function avatar(string $account, string $filename)
     {
         $url = 'http://api.weixin.qq.com/customservice/kfaccount/uploadheadimg?access_token=ACCESS_TOKEN&kf_account=' . $account;
 
@@ -70,21 +72,19 @@ class AccountService extends BaseService
             $data['media'] = '@' . $filename;
         }
 
-        return parent::request($url, $app, $data, false);
+        return $this->request($url, $data, false);
     }
 
     /**
      * 获取所有客服账号
-     * @param App $app
      * @return array
      * @throws WechatException
      */
-    public static function all(App $app)
+    public function all()
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/customservice/getkflist?access_token=ACCESS_TOKEN';
 
-        $result = parent::request($url, $app);
+        $result = $this->request($url);
         return $result['kf_list'];
     }
-
 }

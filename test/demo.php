@@ -13,9 +13,9 @@
 declare(strict_types=1);
 
 
+use yanlongli\wechat\ability\CustomerService;
 use yanlongli\wechat\messaging\message\MsgMenu;
 use yanlongli\wechat\officialAccount\OfficialAccount;
-use yanlongli\wechat\service\CallMessageService;
 use yanlongli\wechat\support\Config;
 use yanlongli\wechat\Wechat;
 use yanlongli\wechat\WechatException;
@@ -27,7 +27,7 @@ $app = new OfficialAccount(Config::get('config'), '', '');
 $app->accessToken = '';
 try {
 //    CallMessageService::send($app, '', new Text("test"));
-    CallMessageService::send($app, '', new MsgMenu("test", [
+    CustomerService::send($app, '', new MsgMenu("test", [
         MsgMenu::option('1', '一星'),
         MsgMenu::option('2', '二星'),
     ], '感谢'));

@@ -12,19 +12,22 @@
  */
 declare(strict_types=1);
 
-namespace yanlongli\wechat\service\card\card;
+namespace yanlongli\wechat\ability;
 
-use yanlongli\wechat\service\card\contract\Card;
+use yanlongli\wechat\App;
 
-class GeneralCard extends Card
+/**
+ * Class Ability 能力抽象类
+ * @package yanlongli\wechat\ability
+ */
+abstract class Ability
 {
-    public string $type = 'GENERAL_CARD';
+    use Request;
 
-    /**
-     * @inheritDoc
-     */
-    public function data()
+    public App $app;
+
+    public function __construct(App $app)
     {
-        // TODO: Implement data() method.
+        $this->app = $app;
     }
 }

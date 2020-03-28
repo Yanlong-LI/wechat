@@ -14,13 +14,24 @@ declare(strict_types=1);
 
 namespace yanlongli\wechat\officialAccount;
 
-
+use yanlongli\wechat\ability\HandleService;
 use yanlongli\wechat\App;
 
 /**
- * Class OfficialAccount
+ * Class OfficialAccount 公众号
  * @package yanlongli\wechatOfficialAccount
+ * @property HandleService $HandleService 接收消息
  */
-class OfficialAccount extends App
+abstract class OfficialAccount extends App
 {
+
+    public function __construct($appId, string $appSecret = null, string $token = null, string $encodingAesKey = null, string $encodingAesKeyLast = null, string $middleUrl = null)
+    {
+        parent::__construct($appId, $appSecret, $token, $encodingAesKey, $encodingAesKeyLast, $middleUrl);
+
+        $this->ability = [
+            ...$this->ability,
+            'HandleService' => HandleService::class
+        ];
+    }
 }

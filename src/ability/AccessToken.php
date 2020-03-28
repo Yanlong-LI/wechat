@@ -12,29 +12,27 @@
  */
 declare(strict_types=1);
 
-namespace yanlongli\wechat\service;
+namespace yanlongli\wechat\ability;
 
-use yanlongli\wechat\App;
 use yanlongli\wechat\support\Curl;
 use yanlongli\wechat\support\Json;
 use yanlongli\wechat\WechatException;
 
 /**
- * Class AccessTokenService
+ * Class AccessTokenService 接口调用凭证
  * @package yanlongli\wechat\service
  */
-class AccessTokenService extends BaseService
+class AccessToken extends Ability
 {
 
     /**
-     * @param App $app
      * @param bool $useCache
      * @return string
      * @throws WechatException
      */
-    public static function getAccessToken(App $app, bool $useCache = true)
+    public function getAccessToken(bool $useCache = true)
     {
-        $cachePath = './access_token/' . md5("$app->appId");
+        $cachePath = './access_token/' . md5($this->app->appId);
         if ($useCache) {
             $expire_time = @filemtime($cachePath);
             if ($expire_time && $expire_time >= time()) {
@@ -44,19 +42,19 @@ class AccessTokenService extends BaseService
 
         //获取accessToken
         $url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s';
-        $response = Curl::get(sprintf($url, $app->appId, $app->appSecret));
+        $response = Curl::get(sprintf($url, $this->app->appId, $this->app->appSecret));
         $arr = Json::parseOrFail($response);
-        $app->accessToken = $arr['access_token'];
+        $this->app->accessToken = $arr['access_token'];
 
         if (!is_dir($cachePath)) {
             mkdir(dirname($cachePath), 0777, true);
         }
 
         $_cache = fopen($cachePath, "w");
-        fwrite($_cache, $app->accessToken);
+        fwrite($_cache, $this->app->accessToken);
         fclose($_cache);
         touch($cachePath, strtotime("+2 hours"));
 
-        return $app->accessToken;
+        return $this->app->accessToken;
     }
 }

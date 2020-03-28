@@ -12,32 +12,34 @@
  */
 declare(strict_types=1);
 
-namespace yanlongli\wechat\service;
+namespace yanlongli\wechat\ability;
 
 
-use yanlongli\wechat\App;
 use yanlongli\wechat\support\Curl;
 use yanlongli\wechat\support\Json;
 use yanlongli\wechat\Wechat;
 use yanlongli\wechat\WechatException;
 
-class BaseService
+/**
+ * Trait Request 请求封装
+ * @package yanlongli\wechat\ability
+ */
+trait Request
 {
 
     /**
      * 请求微信平台服务器，并解析返回的json字符串为数组，失败抛异常
      * @param string $url
-     * @param App $app
      * @param array|null $data
      * @param bool $jsonEncode
      * @return array
      * @throws WechatException
      */
-    public static function request(string $url, App $app, array $data = null, bool $jsonEncode = true)
+    public function request(string $url, array $data = null, bool $jsonEncode = true)
     {
         // 修正 仅在含有需要token的链接中替换token
         if (false !== strpos($url, 'ACCESS_TOKEN')) {
-            $executeUrl = str_replace('ACCESS_TOKEN', Wechat::getApp($app->appId)->getAccessToken(), $url);
+            $executeUrl = str_replace('ACCESS_TOKEN', Wechat::getApp($this->app->appId)->getAccessToken(), $url);
         } else {
             $executeUrl = $url;
         }

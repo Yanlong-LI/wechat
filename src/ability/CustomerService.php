@@ -12,9 +12,8 @@
  */
 declare(strict_types=1);
 
-namespace yanlongli\wechat\service;
+namespace yanlongli\wechat\ability;
 
-use yanlongli\wechat\App;
 use yanlongli\wechat\messaging\contract\CallMessage;
 use yanlongli\wechat\messaging\contract\MassMessage;
 use yanlongli\wechat\messaging\message\Typing;
@@ -24,19 +23,18 @@ use yanlongli\wechat\WechatException;
  * Trait CallMessageService 客服服务
  * @package yanlongli\wechat\service
  */
-class CallMessageService extends BaseService
+class CustomerService extends Ability
 {
 
     /**
      * 客服消息接口，主动给粉丝发消息。当用户和公众号产生特定动作的交互的48小时内有效。
-     * @param App $app
      * @param string $openid
      * @param CallMessage $message
      * @param string $account 客服帐号(显示客服自定义头像)
      * @return array
      * @throws WechatException
      */
-    public static function send(App $app, string $openid, CallMessage $message, string $account = null)
+    public function send(string $openid, CallMessage $message, string $account = null)
     {
         $data = $message->jsonData();
         $type = $message->type();
@@ -54,19 +52,18 @@ class CallMessageService extends BaseService
 
         $url = 'https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=ACCESS_TOKEN';
 
-        return parent::request($url, $app, $data);
+        return $this->request($url, $data);
     }
 
     /**
      * 打字状态下发
-     * @param App $app
      * @param string $openid
      * @param Typing $message
      * @param string $account 客服帐号(显示客服自定义头像)
      * @return array
      * @throws WechatException
      */
-    public static function Typing(App $app, string $openid, Typing $message, string $account = null)
+    public function Typing(string $openid, Typing $message, string $account = null)
     {
         $type = $message->type();
         $data = array(
@@ -76,7 +73,7 @@ class CallMessageService extends BaseService
 
         $url = 'https://api.weixin.qq.com/cgi-bin/message/custom/typing?access_token=ACCESS_TOKEN';
 
-        return parent::request($url, $app, $data);
+        return $this->request($url, $data);
     }
 
     /**
@@ -92,14 +89,13 @@ class CallMessageService extends BaseService
      * 3、类似地，服务号在一个月内，使用is_to_all为true群发的次数，加上公众平台官网群发（不管本次群发是对全体还是对某个分组）的次数，最多只能是4次。
      * 4、设置is_to_all为false时是可以多次群发的，但每个用户只会收到最多4条，且这些群发不会进入历史消息列表。
      *
-     * @param App $app
      * @param string|null $tagId
      * @param MassMessage $message
      * @param bool $isToAll 选择true该消息群发给所有用户
      * @return array
      * @throws WechatException
      */
-    public static function sendAll(App $app, ?string $tagId, MassMessage $message, bool $isToAll = false)
+    public function sendAll(?string $tagId, MassMessage $message, bool $isToAll = false)
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/message/mass/sendall?access_token=ACCESS_TOKEN';
         $data = array(
@@ -112,18 +108,17 @@ class CallMessageService extends BaseService
         $data = array_merge($data, $message->jsonData());
         $data['msgtype'] = $message->type();
 
-        return BaseService::request($url, $app, $data);
+        return $this->request($url, $data);
     }
 
     /**
      * 根据OpenID列表群发
-     * @param App $app
      * @param array $openIds
      * @param MassMessage $message
      * @return array
      * @throws WechatException
      */
-    public static function sendAllWithOpenIds(App $app, array $openIds, MassMessage $message)
+    public function sendAllWithOpenIds(array $openIds, MassMessage $message)
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/message/mass/send?access_token=ACCESS_TOKEN';
         $data = array(
@@ -132,31 +127,29 @@ class CallMessageService extends BaseService
         $data = array_merge($data, $message->jsonData());
         $data['msgtype'] = $message->type();
 
-        return BaseService::request($url, $app, $data);
+        return $this->request($url, $data);
     }
 
     /**
      * 删除群发
-     * @param App $app
      * @param string $msgId
      * @return array
      * @throws WechatException
      */
-    public static function delete(App $app, string $msgId)
+    public function delete(string $msgId)
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/message/mass/delete?access_token=ACCESS_TOKEN';
-        return BaseService::request($url, $app, array('msg_id' => $msgId));
+        return $this->request($url, array('msg_id' => $msgId));
     }
 
     /**
      * 预览(发给某个openid)
-     * @param App $app
      * @param string $openId
      * @param MassMessage $message
      * @return array
      * @throws WechatException
      */
-    public static function previewWithOpenId(App $app, string $openId, MassMessage $message)
+    public function previewWithOpenId(string $openId, MassMessage $message)
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/message/mass/preview?access_token=ACCESS_TOKEN';
 
@@ -167,18 +160,17 @@ class CallMessageService extends BaseService
         $data = array_merge($data, $message->jsonData());
         $data['msgtype'] = $message->type();
 
-        return BaseService::request($url, $app, $data);
+        return $this->request($url, $data);
     }
 
     /**
      * 预览(发给某个微信号)
-     * @param App $app
      * @param string $wxname
      * @param MassMessage $message
      * @return array
      * @throws WechatException
      */
-    public static function previewWithWxname(App $app, string $wxname, MassMessage $message)
+    public function previewWithWxname(string $wxname, MassMessage $message)
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/message/mass/preview?access_token=ACCESS_TOKEN';
         $data = array(
@@ -188,20 +180,19 @@ class CallMessageService extends BaseService
         $data = array_merge($data, $message->jsonData());
         $data['msgtype'] = $message->type();
 
-        return BaseService::request($url, $app, $data);
+        return $this->request($url, $data);
     }
 
     /**
      * 查询群发消息发送状态
-     * @param App $app
      * @param $msgId
      * @return array
      * @throws WechatException
      */
-    public static function status(App $app, string $msgId)
+    public function status(string $msgId)
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/message/mass/get?access_token=ACCESS_TOKEN';
-        return BaseService::request($url, $app, array('msg_id' => $msgId));
+        return $this->request($url, array('msg_id' => $msgId));
     }
 
 }

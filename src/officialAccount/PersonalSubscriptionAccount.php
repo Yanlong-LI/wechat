@@ -14,14 +14,11 @@ declare(strict_types=1);
 
 namespace yanlongli\wechat\officialAccount;
 
-
-use yanlongli\wechat\Service;
-
 /**
- * Class HandleEventService
+ * Class SubscriptionAccount 个人订阅号 个人订阅号无法认证，部分功能无法使用
  * @package yanlongli\wechat\officialAccount
  */
-class HandleEventService extends Service
+class PersonalSubscriptionAccount extends OfficialAccount
 {
 
 }

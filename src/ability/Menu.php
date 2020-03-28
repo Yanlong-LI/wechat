@@ -12,13 +12,17 @@
  */
 declare(strict_types=1);
 
-namespace yanlongli\wechat\service;
+namespace yanlongli\wechat\ability;
 
-use yanlongli\wechat\officialAccount\OfficialAccount;
 use yanlongli\wechat\WechatException;
 
-class MenuService extends BaseService
+/**
+ * Class MenuService 公众号菜单管理
+ * @package yanlongli\wechat\ability
+ */
+class Menu extends Ability
 {
+
     /**
      * 自定义菜单查询接口 仅能查询到使用API设置的菜单配置
      * http://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141014&token=&lang=zh_CN
@@ -28,7 +32,7 @@ class MenuService extends BaseService
      * 类型为click、scancode_push、scancode_waitmsg、pic_sysphoto、pic_photo_or_album、 pic_weixin、location_select：保存值到key；
      * 类型为view：保存链接到url
      *
-     * @param OfficialAccount $app
+     * @param
      * @return array 例如
      * array(
      *     'menu' => array(
@@ -45,10 +49,10 @@ class MenuService extends BaseService
      * )
      * @throws WechatException
      */
-    public static function all(OfficialAccount $app)
+    public function all()
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/menu/get?access_token=ACCESS_TOKEN';
-        return parent::request($url, $app);
+        return $this->request($url);
     }
 
     /**
@@ -65,7 +69,6 @@ class MenuService extends BaseService
      *
      * 如果公众号是在公众平台官网通过网站功能发布菜单,type有可能为news、video、text、img
      *
-     * @param OfficialAccount $app
      * @return array
      *
      * array(
@@ -86,15 +89,14 @@ class MenuService extends BaseService
      * )
      * @throws WechatException
      */
-    public static function current(OfficialAccount $app)
+    public function current()
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/get_current_selfmenu_info?access_token=ACCESS_TOKEN';
-        return parent::request($url, $app);
+        return $this->request($url);
     }
 
     /**
      * 创建菜单
-     * @param OfficialAccount $app
      * @param array $data 菜单数据,例如:
      *
      * $data = array(
@@ -127,28 +129,26 @@ class MenuService extends BaseService
      * @return array {"errcode":0,"errmsg":"ok"}
      * @throws WechatException
      */
-    public static function create(OfficialAccount $app, array $data)
+    public function create(array $data)
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN';
         $data = array('button' => $data);
-        return parent::request($url, $app, $data);
+        return $this->request($url, $data);
     }
 
     /**
      * 删除菜单
-     * @param OfficialAccount $app
      * @return array ["errcode"=>0,"errmsg"=>"ok"]
      * @throws WechatException
      */
-    public static function delete(OfficialAccount $app)
+    public function delete()
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=ACCESS_TOKEN';
-        return parent::request($url, $app);
+        return $this->request($url);
     }
 
     /**
      * 创建个性化菜单
-     * @param OfficialAccount $app
      * @param array $data
      * @param array $matchRule 菜单匹配规则
      * [
@@ -163,39 +163,37 @@ class MenuService extends BaseService
      * @return string 返回个性化菜单id
      * @throws WechatException
      */
-    public static function createConditional(OfficialAccount $app, array $data, array $matchRule)
+    public function createConditional(array $data, array $matchRule)
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/menu/addconditional?access_token=ACCESS_TOKEN';
         $data = array('button' => $data, 'matchrule' => $matchRule);
-        $result = parent::request($url, $app, $data);
+        $result = $this->request($url, $data);
         return $result['menuid'];
     }
 
     /**
      * 删除个个化菜单，失败抛出异常
-     * @param OfficialAccount $app
      * @param $menuId
      * @throws WechatException
      */
-    public static function deleteConditional(OfficialAccount $app, string $menuId)
+    public function deleteConditional(string $menuId)
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/menu/delconditional?access_token=ACCESS_TOKEN';
         $data = array('menuid' => $menuId,);
-        parent::request($url, $app, $data);
+        $this->request($url, $data);
     }
 
     /**
      * 测试个性化菜单匹配结果
-     * @param OfficialAccount $app
      * @param string $openid
      * @return array 返回菜单数据
      * @throws WechatException
      */
-    public static function tryMatch(OfficialAccount $app, string $openid)
+    public function tryMatch(string $openid)
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/menu/delconditional?access_token=ACCESS_TOKEN';
         $data = array('user_id' => $openid,);
-        return parent::request($url, $app, $data);
+        return $this->request($url, $data);
     }
 
 
@@ -205,7 +203,7 @@ class MenuService extends BaseService
      * @param string $key
      * @return array
      */
-    public static function optionClick(string $name, string $key): array
+    public function optionClick(string $name, string $key): array
     {
         return [
             'type' => 'click',
@@ -220,7 +218,7 @@ class MenuService extends BaseService
      * @param array $subButton length max 5
      * @return array
      */
-    public static function optionSubButton(string $name, array $subButton): array
+    public function optionSubButton(string $name, array $subButton): array
     {
         return [
             'name' => $name,
@@ -234,7 +232,7 @@ class MenuService extends BaseService
      * @param string $url
      * @return array
      */
-    public static function optionView(string $name, string $url): array
+    public function optionView(string $name, string $url): array
     {
         return [
             'type' => 'view',
@@ -251,7 +249,7 @@ class MenuService extends BaseService
      * @param string $url 不支持打开小程序的版本将打开此URL
      * @return array
      */
-    public static function optionMiniprogram(string $name, string $appId, string $path, string $url): array
+    public function optionMiniprogram(string $name, string $appId, string $path, string $url): array
     {
         return [
             'type' => 'miniprogram',
@@ -268,7 +266,7 @@ class MenuService extends BaseService
      * @param string $mediaId
      * @return array
      */
-    public static function optionMedia(string $name, string $mediaId): array
+    public function optionMedia(string $name, string $mediaId): array
     {
 
         return [
@@ -284,7 +282,7 @@ class MenuService extends BaseService
      * @param string $mediaId
      * @return array
      */
-    public static function optionNews(string $name, string $mediaId): array
+    public function optionNews(string $name, string $mediaId): array
     {
         return [
             'type' => 'view_limited',
@@ -299,7 +297,7 @@ class MenuService extends BaseService
      * @param string $key
      * @return array
      */
-    public static function optionLocation(string $name, string $key): array
+    public function optionLocation(string $name, string $key): array
     {
         return [
             'type' => 'location_select',
@@ -314,7 +312,7 @@ class MenuService extends BaseService
      * @param string $key
      * @return array
      */
-    public static function optionPicSysPhoto(string $name, string $key): array
+    public function optionPicSysPhoto(string $name, string $key): array
     {
         return [
             'type' => 'pic_sysphoto',
@@ -329,7 +327,7 @@ class MenuService extends BaseService
      * @param string $key
      * @return array
      */
-    public static function optionPicPhotoOrAlbum(string $name, string $key): array
+    public function optionPicPhotoOrAlbum(string $name, string $key): array
     {
         return [
             'type' => 'pic_photo_or_album',
@@ -344,7 +342,7 @@ class MenuService extends BaseService
      * @param string $key
      * @return array
      */
-    public static function optionPicWeixin(string $name, string $key): array
+    public function optionPicWeixin(string $name, string $key): array
     {
         return [
             'type' => 'pic_weixin',
@@ -359,7 +357,7 @@ class MenuService extends BaseService
      * @param string $key
      * @return array
      */
-    public static function optionScancodeWaitmsg(string $name, string $key): array
+    public function optionScancodeWaitmsg(string $name, string $key): array
     {
         return [
             'type' => 'scancode_waitmsg',
@@ -374,7 +372,7 @@ class MenuService extends BaseService
      * @param string $key
      * @return array
      */
-    public static function optionScancodePush(string $name, string $key): array
+    public function optionScancodePush(string $name, string $key): array
     {
         return [
             'type' => 'scancode_push',

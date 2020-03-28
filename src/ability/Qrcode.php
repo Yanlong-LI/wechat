@@ -11,9 +11,8 @@
  * See the Mulan PSL v2 for more details.
  */
 
-namespace yanlongli\wechat\service;
+namespace yanlongli\wechat\ability;
 
-use yanlongli\wechat\officialAccount\OfficialAccount;
 use yanlongli\wechat\WechatException;
 
 /**
@@ -22,11 +21,11 @@ use yanlongli\wechat\WechatException;
  * @author  Zou Yiliang
  * @since   1.0
  */
-class QrcodeService extends BaseService
+class Qrcode extends Ability
 {
+
     /**
      * 生成临时二唯码
-     * @param OfficialAccount $app
      * @param int|string $sceneId
      *
      * 场景值ID 为整数时:32位非0整型, 建议大于100000,避免与永久二唯码冲突
@@ -41,8 +40,9 @@ class QrcodeService extends BaseService
      * ]
      * @throws WechatException
      */
-    public static function temporary(OfficialAccount $app, string $sceneId, int $expireSeconds = null)
+    public function temporary(string $sceneId, int $expireSeconds = null)
     {
+
         $url = 'https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=ACCESS_TOKEN';
 
         //0x7FFFFFFF 32位int最大值
@@ -70,17 +70,16 @@ class QrcodeService extends BaseService
             $data['expire_seconds'] = $expireSeconds;
         }
 
-        return parent::request($url, $app, $data);
+        return $this->request($url, $data);
     }
 
     /**
      * 生成永久二唯码
-     * @param OfficialAccount $app
      * @param int|string $sceneId 场景值ID 32位非0整型,最大值为100000,目前参数只支持1--100000; 字符串形式的ID，长度限制为1到64
      * @return array 返回值参考 QrcodeService::temporary()方法的返回值
      * @throws WechatException
      */
-    public static function forever(OfficialAccount $app, $sceneId)
+    public function forever($sceneId)
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=ACCESS_TOKEN';
 
@@ -104,7 +103,7 @@ class QrcodeService extends BaseService
             );
         }
 
-        return parent::request($url, $app, $data);
+        return $this->request($url, $data);
     }
 
     /**
@@ -112,7 +111,7 @@ class QrcodeService extends BaseService
      * @param string $ticket 获取二维码ticket后，用ticket换取二维码图片。本接口无须登录态即可调用
      * @return string 返回可用于 <img src="...">
      */
-    public static function url(string $ticket)
+    public function url(string $ticket)
     {
         return 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' . urlencode($ticket);
     }

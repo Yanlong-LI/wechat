@@ -11,14 +11,17 @@
  * See the Mulan PSL v2 for more details.
  */
 
-namespace yanlongli\wechat\service;
+namespace yanlongli\wechat\ability;
 
 use CURLFile;
-use yanlongli\wechat\App;
 use yanlongli\wechat\support\Json;
 use yanlongli\wechat\WechatException;
 
-class MaterialService extends BaseService
+/**
+ * Class MaterialService 素材资源管理
+ * @package yanlongli\wechat\ability
+ */
+class Material extends Ability
 {
 
     /**
@@ -26,7 +29,6 @@ class MaterialService extends BaseService
      *
      * curl -F media=@test.jpg "http://file.api.weixin.qq.com/cgi-bin/media/upload?access_token=ACCESS_TOKEN&type=image"
      *
-     * @param App $app
      * @param string $filename 文件名
      * @param string $type 媒体文件类型，分别有图片（image）、语音（voice）、视频（video）和缩略图（thumb，主要用于视频与音乐格式的缩略图）
      *      图片（image）: 大小不超过2M，支持bmp/png/jpeg/jpg/gif格式
@@ -36,7 +38,7 @@ class MaterialService extends BaseService
      * @return array
      * @throws WechatException
      */
-    public static function uploadFileTemporary(App $app, string $filename, string $type)
+    public function uploadFileTemporary(string $filename, string $type)
     {
         $filename = realpath($filename);
 
@@ -50,14 +52,13 @@ class MaterialService extends BaseService
 
         $url = 'https://api.weixin.qq.com/cgi-bin/media/upload?access_token=ACCESS_TOKEN&type=' . $type;
 
-        return parent::request($url, $app, $data, false);
+        return $this->request($url, $data, false);
     }
 
 
     /**
      * 新增永久素材 媒体文件类型别有图片（image）、语音（voice) 、视频（video）和缩略图（thumb）
      *
-     * @param App $app
      * @param string $filename
      * @param string $type
      * @param string $title 视频素材的标题 只对类型为video有效
@@ -65,7 +66,7 @@ class MaterialService extends BaseService
      * @return array
      * @throws WechatException
      */
-    public static function uploadFile(App $app, string $filename, string $type, string $title = null, string $introduction = null)
+    public function uploadFile(string $filename, string $type, string $title = null, string $introduction = null)
     {
         $filename = realpath($filename);
 
@@ -86,7 +87,7 @@ class MaterialService extends BaseService
 
         $url = 'https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=ACCESS_TOKEN';
 
-        return parent::request($url, $app, $data, false);
+        return $this->request($url, $data, false);
     }
 
     /**
@@ -94,15 +95,14 @@ class MaterialService extends BaseService
      * 从微信服务器下载文件 成功返回文件名，失败返回false
      * http://mp.weixin.qq.com/wiki/12/58bfcfabbd501c7cd77c19bd9cfa8354.html
      *
-     * @param App $app
      * @param string $mediaId
      * @param string $savePath
      * @return bool|string
      * @throws WechatException
      */
-    public function downFile(App $app, string $mediaId, string $savePath = './uploads')
+    public function downFile(string $mediaId, string $savePath = './uploads')
     {
-        $token = $app->getAccessToken();
+        $token = $this->app->getAccessToken();
 
         $url = 'http://file.api.weixin.qq.com/cgi-bin/media/get?access_token=' . $token . '&media_id=' . $mediaId;
 
@@ -165,12 +165,11 @@ class MaterialService extends BaseService
     /**
      * 上传图文消息内的图片获取URL (在图文消息的具体内容中，将过滤外部的图片链接)，只能使用此方法返回的url
      * 本接口所上传的图片不占用公众号的素材库中图片数量的5000个的限制。图片仅支持jpg/png格式，大小必须在1MB以下。
-     * @param App $app
      * @param $filename
      * @return string 例如 http://mmbiz.qpic.cn/mmbiz/D7sHwECXBUtWxg2eVOmIsqWOERic2dfBWYhWtOzIxhiaYAIt8ludGP0QHh8cO6pVQT8V8KKZcahvzQiblMWXlA4Pw/0
      * @throws WechatException
      */
-    public static function uploadNewsImage(App $app, string $filename)
+    public function uploadNewsImage(string $filename)
     {
         $filename = realpath($filename);
 
@@ -182,13 +181,12 @@ class MaterialService extends BaseService
 
         $url = 'https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=ACCESS_TOKEN';
 
-        $result = parent::request($url, $app, $data, false);
+        $result = $this->request($url, $data, false);
         return $result['url'];
     }
 
     /**
      * 新增永久图文素材，所有参数全是必填，多图文素材一个参数传入数组即可，数组的key与本方法参数一致
-     * @param App $app
      * @param string|array $title
      * @param string $thumb_media_id
      * @param string $author
@@ -199,7 +197,7 @@ class MaterialService extends BaseService
      * @return array
      * @throws WechatException
      */
-    public static function uploadNews(App $app, $title, string $thumb_media_id = null, string $author = null, string $digest = null, string $show_cover_pic = null, string $content = null, string $content_source_url = null)
+    public function uploadNews($title, string $thumb_media_id = null, string $author = null, string $digest = null, string $show_cover_pic = null, string $content = null, string $content_source_url = null)
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/material/add_news?access_token=ACCESS_TOKEN';
 
@@ -211,6 +209,6 @@ class MaterialService extends BaseService
             'articles' => $title,
         );
 
-        return parent::request($url, $app, $data);
+        return $this->request($url, $data);
     }
 }

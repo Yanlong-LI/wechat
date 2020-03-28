@@ -12,8 +12,7 @@
  */
 declare(strict_types=1);
 
-namespace yanlongli\wechat\service;
-
+namespace yanlongli\wechat\ability;
 
 use yanlongli\wechat\messaging\message\Template;
 use yanlongli\wechat\miniProgram\MiniProgram;
@@ -24,27 +23,26 @@ use yanlongli\wechat\WechatException;
  * Class TemplateMessageService
  * @package yanlongli\wechat\service
  */
-class TemplateMessageService extends BaseService
+class TemplateMessage extends Ability
 {
 
     /**
      * 发送公众号模板消息
      *
-     * @param OfficialAccount|MiniProgram $app
      * @param string $openid
      * @param Template $template
      * @return array
      * @throws WechatException
      */
-    public static function send(OfficialAccount $app, string $openid, Template $template)
+    public function send(string $openid, Template $template)
     {
-        if ($app instanceof OfficialAccount) {
+        if ($this->app instanceof OfficialAccount) {
 
             $apiUrl = 'https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN';
             $postData = array_merge([
                 'touser' => $openid
             ], $template->jsonData());
-        } elseif ($app instanceof MiniProgram) {
+        } elseif ($this->app instanceof MiniProgram) {
             $apiUrl = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=ACCESS_TOKEN';
 
             $postData = array_merge([
@@ -55,12 +53,11 @@ class TemplateMessageService extends BaseService
             throw new WechatException('不支持的APP类型');
         }
 
-        return BaseService::request($apiUrl, $app, $postData);
+        return $this->request($apiUrl, $postData);
     }
 
     /**
      * 获取公众号消息模板列表
-     * @param OfficialAccount $app
      * @return array {
      * "template_list": [{
      * "template_id": "iPk5sOIt5X_flOVKn5GrTFpncEYTojx6ddbt8WYoV5s",
@@ -73,10 +70,10 @@ class TemplateMessageService extends BaseService
      * }
      * @throws WechatException
      */
-    public static function templateList(OfficialAccount $app)
+    public function templateList()
     {
         $apiUrl = 'https://api.weixin.qq.com/cgi-bin/template/get_all_private_template?access_token=ACCESS_TOKEN';
 
-        return parent::request($apiUrl, $app);
+        return $this->request($apiUrl);
     }
 }

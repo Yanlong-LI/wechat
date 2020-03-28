@@ -12,19 +12,21 @@
  */
 declare(strict_types=1);
 
-namespace yanlongli\wechat\service\card\card;
+namespace yanlongli\wechat\ability\card\contract;
 
-use yanlongli\wechat\service\card\contract\Card;
-
-class GroupOn extends Card
+/**
+ * Interface Card
+ * @package yanlongli\wechat\card
+ */
+abstract class Card
 {
-    public string $type = 'GROUPON';
+    /**
+     * @var string
+     */
+    public string $type;
 
     /**
-     * @inheritDoc
+     * @return string
      */
-    public function data()
-    {
-        // TODO: Implement data() method.
-    }
+    abstract public function data();
 }

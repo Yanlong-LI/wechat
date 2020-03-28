@@ -15,11 +15,13 @@ declare(strict_types=1);
 namespace yanlongli\wechat;
 
 
-use yanlongli\wechat\service\AccessTokenService;
+use yanlongli\wechat\ability\Ability;
+use yanlongli\wechat\ability\AccessToken;
 
 /**
  * Class App
  * @package yanlongli\wechat
+ * @property AccessToken $AccessToken
  */
 abstract class App
 {
@@ -59,7 +61,9 @@ abstract class App
     /**
      * @var array
      */
-    protected array $services = [];
+    protected array $ability = [
+        'AccessToken' => AccessToken::class
+    ];
 
     /**
      * 应用名称
@@ -71,11 +75,11 @@ abstract class App
     /**
      * 构造方法 可以使用一个数组作为参数
      * @param array|string $appId
-     * @param string|null $appSecret
-     * @param string|null $token
-     * @param string|null $encodingAesKey
-     * @param string|null $encodingAesKeyLast
-     * @param string|null $middleUrl
+     * @param string $appSecret
+     * @param string $token
+     * @param string $encodingAesKey
+     * @param string $encodingAesKeyLast
+     * @param string $middleUrl
      */
     public function __construct($appId, string $appSecret = null, string $token = null, string $encodingAesKey = null, string $encodingAesKeyLast = null, string $middleUrl = null)
     {
@@ -105,18 +109,43 @@ abstract class App
         if ($useCache && $this->accessToken) {
             return $this->accessToken;
         }
-        return AccessTokenService::getAccessToken($this, $useCache);
+        return $this->AccessToken->getAccessToken($useCache);
     }
 
 
+    /**
+     * @param $name
+     * @return mixed|null
+     * @throws WechatException
+     */
     public function __get($name)
     {
-        return $this->services[$name] ?? null;
+        /**
+         * @var Ability $ability
+         */
+        $ability = $this->ability[$name] ?? null;
+        if (is_object($ability)) {
+            return $ability;
+        } else if (is_string($ability)) {
+            return new $ability($this);
+        }
+        throw new WechatException("获取能力失败");
     }
 
-    public function __set($name, $service)
+    /**
+     * 设置能力
+     * @param $name
+     * @param $ability
+     * @throws WechatException
+     */
+    public function __set($name, $ability)
     {
-        $this->services[$name] = $service;
+        if (is_object($ability)) {
+            $this->ability[$name] = $ability;
+        } else if (is_string($ability)) {
+            $this->ability[$name] = new $ability($this);
+        }
+        throw new WechatException("设定能力失败");
     }
 
 }

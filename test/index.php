@@ -12,8 +12,8 @@
  */
 declare(strict_types=1);
 
+use yanlongli\wechat\ability\OAuth2;
 use yanlongli\wechat\officialAccount\OfficialAccount;
-use yanlongli\wechat\service\OAuthService;
 use yanlongli\wechat\support\Config;
 use yanlongli\wechat\WechatException;
 
@@ -25,7 +25,7 @@ $officialAccount = new OfficialAccount(Config::get('config.'));
 try {
     session_start();
 
-    $user = $_SESSION['wechat'] ??= OAuthService::getOpenid($officialAccount);
+    $user = $_SESSION['wechat'] ??= OAuth2::getOpenid($officialAccount);
     var_dump($_SESSION);
 
     var_dump($user);

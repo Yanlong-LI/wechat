@@ -12,16 +12,16 @@
  */
 declare(strict_types=1);
 
-namespace yanlongli\wechat\officialAccount;
+namespace yanlongli\wechat\messaging\receive\event;
 
-use yanlongli\wechat\ability\CustomerService;
+use yanlongli\wechat\messaging\receive\EventMessage;
 
 /**
- * Class EnterpriseAccount 企业号
- * @package yanlongli\wechat\officialAccount
- * @property CustomerService $CustomerService 客服消息能力
+ * Class UserEnterTempsession 进入客服会话-小程序
+ * @package yanlongli\wechat\messaging\receive\event
+ * @property string SessionFrom 进入客服会话的自定义场景
  */
-class EnterpriseAccount extends OfficialAccount
+class UserEnterTempsession extends EventMessage
 {
-
+    public $Event = 'user_enter_tempsession';
 }

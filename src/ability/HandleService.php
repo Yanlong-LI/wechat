@@ -12,9 +12,8 @@
  */
 declare(strict_types=1);
 
-namespace yanlongli\wechat;
+namespace yanlongli\wechat\ability;
 
-use Exception;
 use ReflectionException;
 use ReflectionFunction;
 use yanlongli\wechat\messaging\contract\ReplyMessage;
@@ -26,12 +25,13 @@ use yanlongli\wechat\sdk\WXBizMsgCrypt;
 use yanlongli\wechat\support\Json;
 use yanlongli\wechat\support\Request;
 use yanlongli\wechat\support\Xml;
+use yanlongli\wechat\WechatException;
 
 /**
- * Class Service
+ * Class Service 服务监听能力 监听客服消息、公众号消息、事件消息
  * @package yanlongli\wechat
  */
-abstract class Service
+abstract class HandleService extends Ability
 {
     //加密类型
     const ENCRYPT_TYPE_RAW = 'raw';
@@ -45,10 +45,6 @@ abstract class Service
 
     protected bool $stopPropagation = false;
 
-    /**
-     * @var App
-     */
-    protected App $app;
 
     /**
      * @var ReceiveMessage
@@ -60,15 +56,6 @@ abstract class Service
      * @var string self::ENCRYPT_TYPE_RAW|self::ENCRYPT_TYPE_AES
      */
     protected ?string $encryptType = null;
-
-    /**
-     * Service constructor.
-     * @param App $app
-     */
-    public function __construct(App $app)
-    {
-        $this->app = $app;
-    }
 
     /**
      * 验证签名验证
@@ -128,7 +115,6 @@ abstract class Service
 
     /**
      * 处理动作
-     * @throws WechatException
      * @see 该方法会终止继续执行 die()
      */
     public function handle(): void
@@ -240,7 +226,6 @@ abstract class Service
      * @param string $message
      * @return string
      * @throws WechatException
-     * @throws Exception
      */
     protected function attemptDecrypt($message)
     {

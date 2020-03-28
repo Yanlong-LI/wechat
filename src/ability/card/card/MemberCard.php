@@ -12,13 +12,24 @@
  */
 declare(strict_types=1);
 
-namespace yanlongli\wechat\officialAccount;
+namespace yanlongli\wechat\ability\card\card;
 
-/**
- * Class User
- * @package yanlongli\wechat\officialAccount
- */
-class User extends \yanlongli\wechat\User
+use yanlongli\wechat\ability\card\contract\Card;
+
+class MemberCard extends Card
 {
+    public string $type = 'MEMBER_CARD';
 
+    /**
+     * @inheritDoc
+     */
+    public function data()
+    {
+        return [
+            'card_type' => $this->type,
+            'member_card' => [
+
+            ]
+        ];
+    }
 }

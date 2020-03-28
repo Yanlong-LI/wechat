@@ -11,16 +11,19 @@
  * See the Mulan PSL v2 for more details.
  */
 
-namespace yanlongli\wechat\service;
+namespace yanlongli\wechat\ability;
 
-use yanlongli\wechat\App;
 use yanlongli\wechat\WechatException;
 
-class UserService extends BaseService
+/**
+ * Class UserManagement 用户管理
+ * @package yanlongli\wechat\ability
+ */
+class UserManagement extends Ability
 {
+
     /**
      * 获取用户基本信息
-     * @param App $app
      * @param $openid
      * @param string $lang
      * @return array 数据如下
@@ -43,17 +46,16 @@ class UserService extends BaseService
      *    ]
      * @throws WechatException
      */
-    public static function get(App $app, string $openid, string $lang = 'zh_CN')
+    public function get(string $openid, string $lang = 'zh_CN')
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=%s&lang=%s';
         $url = sprintf($url, $openid, $lang);
 
-        return parent::request($url, $app);
+        return $this->request($url);
     }
 
     /**
      * 批量获取用户基本信息 最多支持一次拉取100条
-     * @param App $app
      * @param array $openIds
      * @param string $lang
      * @return array 示例中为一次性拉取了2个openid的用户基本信息，第一个是已关注的，第二个是未关注的
@@ -83,7 +85,7 @@ class UserService extends BaseService
      * ]
      * @throws WechatException
      */
-    public static function batchGet(App $app, array $openIds, string $lang = 'zh_CN')
+    public function batchGet(array $openIds, string $lang = 'zh_CN')
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/user/info/batchget?access_token=ACCESS_TOKEN';
 
@@ -94,7 +96,7 @@ class UserService extends BaseService
 
         $data = array('user_list' => $data);
 
-        $result = parent::request($url, $app, $data);
+        $result = $this->request($url, $data);
 
         return $result['user_info_list'];
     }
@@ -107,17 +109,16 @@ class UserService extends BaseService
      * 将上一次调用得到的返回中的next_openid值，作为下一次调用中的next_openid值
      * 关注者列表已返回完时，返回next_openid为空
      *
-     * @param App $app
      * @param string $nextOpenId
      * @return array ["total"=>关注该公众账号的总用户数,"count"=>本次拉取个数,"data"=>["openid":["","OPENID1","OPENID2"]],"next_openid"=>"NEXT_OPENID"]
      * @throws WechatException
      */
-    public static function all(App $app, string $nextOpenId = '')
+    public function all(string $nextOpenId = '')
     {
         $url = "https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid=%s";
         $url = sprintf($url, $nextOpenId);
 
-        return parent::request($url, $app);
+        return $this->request($url);
     }
 
 
