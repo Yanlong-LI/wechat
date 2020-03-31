@@ -17,6 +17,7 @@ namespace yanlongli\wechat;
 
 use yanlongli\wechat\ability\Ability;
 use yanlongli\wechat\ability\AccessToken;
+use yanlongli\wechat\service\Client;
 
 /**
  * Class App
@@ -25,6 +26,8 @@ use yanlongli\wechat\ability\AccessToken;
  */
 abstract class App
 {
+    use Client;
+
     /**
      * 应用id
      * @var string

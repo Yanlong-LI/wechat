@@ -26,7 +26,7 @@ use yanlongli\wechat\ability\UserManagement;
  * @property UserManagement $UserManagement 用户管理
  * @property CustomerServiceManagement CustomerServiceManagement 多客服管理
  */
-class SubscriptionAccount extends OfficialAccount
+class SubscriptionAccount extends PersonalSubscriptionAccount
 {
     public function __construct($appId, string $appSecret = null, string $token = null, string $encodingAesKey = null, string $encodingAesKeyLast = null, string $middleUrl = null)
     {

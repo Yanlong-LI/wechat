@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace yanlongli\wechat\support;
 
 
+use stdClass;
 use yanlongli\wechat\WechatException;
 
 class Json
@@ -30,22 +31,22 @@ class Json
     }
 
     /**
-     * 解析微信平台返回的json字符串，转为数组，错误时，抛异常
+     * 解析微信平台返回的json字符串，错误时，抛异常
      * @param $jsonStr
-     * @return array
+     * @return stdClass
      * @throws WechatException
      */
     public static function parseOrFail($jsonStr)
     {
-        $arr = json_decode($jsonStr, true);
+        $responseStd = json_decode($jsonStr);
 
-        if (isset($arr['errcode']) && 0 !== $arr['errcode']) {
-            if (empty($arr['errmsg'])) {
-                $arr['errmsg'] = 'Unknown';
+        if (isset($responseStd->errcode) && 0 !== $responseStd->errcode) {
+            if (empty($responseStd->errmsg)) {
+                $responseStd->errmsg = 'Unknown';
             }
 
-            throw new WechatException($arr['errmsg'], $arr['errcode']);
+            throw new WechatException($responseStd->errmsg, $responseStd->errcode);
         }
-        return $arr;
+        return $responseStd;
     }
 }

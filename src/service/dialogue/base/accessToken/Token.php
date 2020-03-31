@@ -12,27 +12,22 @@
  */
 declare(strict_types=1);
 
-namespace yanlongli\wechat;
+namespace yanlongli\wechat\service\dialogue\base\accessToken;
 
+use yanlongli\wechat\service\Request;
 
 /**
- * Class User
- * @package yanlongli\wechat
+ * Class Token 获取 Access_token
+ * @package yanlongli\wechat\service\dialogue\base\accessToken
  */
-abstract class User
+class Token extends Request
 {
-    /**
-     * @var string
-     */
-    public string $openID;
+    public string $grant_type = 'client_credential';
+    public string $appid;
+    public string $secret;
 
-    /**
-     * User constructor.
-     * @param $openID
-     * @return void
-     */
-    public function __construct(string $openID)
+    public function url(): string
     {
-        $this->openID = $openID;
+        return 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET';
     }
 }

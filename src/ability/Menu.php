@@ -180,7 +180,7 @@ class Menu extends Ability
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/menu/delconditional?access_token=ACCESS_TOKEN';
         $data = array('menuid' => $menuId,);
-        $this->request($url, $data);
+        return $this->request($url, $data);
     }
 
     /**
