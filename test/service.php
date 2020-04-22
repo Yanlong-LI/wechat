@@ -12,7 +12,6 @@
  */
 declare(strict_types=1);
 
-use yanlongli\wechat\ability\CustomerService;
 use yanlongli\wechat\messaging\contract\ReplyMessage;
 use yanlongli\wechat\messaging\message\Image;
 use yanlongli\wechat\messaging\message\Text;
@@ -35,11 +34,9 @@ use yanlongli\wechat\messaging\receive\general\ShortVideo;
 use yanlongli\wechat\messaging\receive\general\Text as receiveText;
 use yanlongli\wechat\messaging\receive\general\Video;
 use yanlongli\wechat\messaging\receive\ReceiveMessage;
-use yanlongli\wechat\officialAccount\HandleEventService;
 use yanlongli\wechat\officialAccount\SubscriptionAccount;
 use yanlongli\wechat\support\Config;
 use yanlongli\wechat\support\Request;
-use yanlongli\wechat\WechatException;
 
 
 include '../vendor/autoload.php';
@@ -51,18 +48,17 @@ Config::loadConfigFile(__DIR__ . '/config.php');
  */
 $officialAccount = new SubscriptionAccount(Config::get('config'));
 
-$service = new HandleEventService($officialAccount);
 // 订阅事件
-$service->register(function (Subscribe $subscribe) {
+$officialAccount->HandleService->register(function (Subscribe $subscribe) {
     $subscribe->sendMessage(new Text("感谢您的关注"));
 });
 // 扫码关注事件
-$service->register(function (QRScene $QRScene) {
+$officialAccount->HandleService->register(function (QRScene $QRScene) {
     return new Text($QRScene->EventKey);
 });
 
 //文字消息
-$service->register(function (receiveText $text) use ($officialAccount): ReplyMessage {
+$officialAccount->HandleService->register(function (receiveText $text) use ($officialAccount): ReplyMessage {
     if ($text->Content === '1') {
         return new Text($text->FromUserName);
     }
@@ -70,75 +66,74 @@ $service->register(function (receiveText $text) use ($officialAccount): ReplyMes
     return new Text($text->Content);
 });
 //图片消息
-$service->register(function (receiveImage $image) use ($officialAccount): ReplyMessage {
-    CustomerService::send($officialAccount, $image->FromUserName, new Text($image->MediaId));
+$officialAccount->HandleService->register(function (receiveImage $image) use ($officialAccount): ReplyMessage {
+    $officialAccount->CustomerService->sendMessage($image->FromUserName, new Text($image->MediaId));
     return new Image($image->MediaId);
 });
 // 链接
-$service->register(function (Link $link) {
+$officialAccount->HandleService->register(function (Link $link) {
     return new Text('收到了您的链接：' . $link->Url);
 });
 // 视频
-$service->register(function (Video $video) {
+$officialAccount->HandleService->register(function (Video $video) {
     return new Text('收到了您的视频');
 });
 // 收到了您的小视频
-$service->register(function (ShortVideo $shortVideo) {
+$officialAccount->HandleService->register(function (ShortVideo $shortVideo) {
     return new Text('收到了您的视频');
 });
 //位置消息
-$service->register(function (receiveLocation $location) {
+$officialAccount->HandleService->register(function (receiveLocation $location) {
     return new Text("收到普通的地址坐标：$location->Location_X,$location->Location_Y,$location->Scale,$location->MsgId");
 });
 // 坐标事件
-$service->register(function (receiveEventLocation $location) {
+$officialAccount->HandleService->register(function (receiveEventLocation $location) {
     return new Text("收到事件的地址坐标：5s一次 " . date(DATE_ATOM));
 });
 
-$service->register(function (ReceiveMessage $receiveMessage): ReplyMessage {
+$officialAccount->HandleService->register(function (ReceiveMessage $receiveMessage): ReplyMessage {
     return new Text("收到一条未处理消息:");
 });
 //点击菜单事件
-$service->register(function (Click $click) {
+$officialAccount->HandleService->register(function (Click $click) {
     return new Text("您点击了菜单," . $click->EventKey);
 });
-$service->register(function (ScanCodeWaitMsg $click) use ($officialAccount) {
+$officialAccount->HandleService->register(function (ScanCodeWaitMsg $click) use ($officialAccount) {
     return new Text("扫码等待消息" . json_encode(Request::param()));
 });
 
 // 下面这些不能回复消息，回了也没反应，可以主动发送消息
 //打开地图选择器事件
-$service->register(function (LocationSelect $click) use ($officialAccount) {
-    CustomerService::send($officialAccount, $click->FromUserName, new Text("您打开了地图选择器"));
+$officialAccount->HandleService->register(function (LocationSelect $click) use ($officialAccount) {
+    $officialAccount->CustomerService->sendMessage($click->FromUserName, new Text("您打开了地图选择器"));
 });
 //点击二选一图片菜单事件
-$service->register(function (PicPhotoOrAlbum $click) use ($officialAccount) {
-    CustomerService::send($officialAccount, $click->FromUserName, new Text("您点击自由选择图片"));
+$officialAccount->HandleService->register(function (PicPhotoOrAlbum $click) use ($officialAccount) {
+    $officialAccount->CustomerService->sendMessage($click->FromUserName, new Text("您点击自由选择图片"));
 });
 //点击相册选择图片事件
-$service->register(function (PicWeixin $click) use ($officialAccount) {
-    CustomerService::send($officialAccount, $click->FromUserName, new Text("您点击微信图片选择器"));
+$officialAccount->HandleService->register(function (PicWeixin $click) use ($officialAccount) {
+    $officialAccount->CustomerService->sendMessage($click->FromUserName, new Text("您点击微信图片选择器"));
 });
 //点击直接拍照事件
-$service->register(function (PicSysPhoto $click) use ($officialAccount) {
-    CustomerService::send($officialAccount, $click->FromUserName, new Text("您只能直接拍照"));
+$officialAccount->HandleService->register(function (PicSysPhoto $click) use ($officialAccount) {
+    $officialAccount->CustomerService->sendMessage($click->FromUserName, new Text("您只能直接拍照"));
 });
 //扫码推送事件，会自动展示code内容或打开网页等
-$service->register(function (ScanCodePush $click) use ($officialAccount) {
-    CustomerService::send($officialAccount, $click->FromUserName, new Text("扫码推送"));
+$officialAccount->HandleService->register(function (ScanCodePush $click) use ($officialAccount) {
+    $officialAccount->CustomerService->sendMessage($click->FromUserName, new Text("扫码推送"));
 });
 //打开菜单的URL链接
-$service->register(function (View $click) use ($officialAccount) {
-    CustomerService::send($officialAccount, $click->FromUserName, new Text("打开URL"));
+$officialAccount->HandleService->register(function (View $click) use ($officialAccount) {
+    $officialAccount->CustomerService->sendMessage($click->FromUserName, new Text("打开URL"));
 });
 //打开菜单关联的小程序
-$service->register(function (ViewMiniprogram $click) use ($officialAccount) {
-    CustomerService::send($officialAccount, $click->FromUserName, new Text("打开小程序"));
+$officialAccount->HandleService->register(function (ViewMiniprogram $click) use ($officialAccount) {
+    $officialAccount->CustomerService->sendMessage($click->FromUserName, new Text("打开小程序"));
 });
 //处理动作
 try {
-    $service->handle();
-} catch (WechatException $e) {
-    //处理异常，回复 success让微信不报错
+    $officialAccount->HandleService->handle();
+} catch (Throwable $exception) {
     echo 'success';
 }

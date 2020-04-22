@@ -16,10 +16,7 @@ namespace yanlongli\wechat\messaging\contract;
 
 /**
  * Interface CallMessage 客服消息
- * @author  Zou Yiliang
- * @license MIT
- * @version 0.0.1.0
- * @package yanlongli\wechat\contract
+ * @package yanlongli\wechat\messaging\contract
  */
 interface CallMessage extends Message
 {

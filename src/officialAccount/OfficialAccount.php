@@ -14,8 +14,8 @@ declare(strict_types=1);
 
 namespace yanlongli\wechat\officialAccount;
 
-use yanlongli\wechat\ability\HandleService;
 use yanlongli\wechat\App;
+use yanlongli\wechat\service\ability\HandleService;
 
 /**
  * Class OfficialAccount 公众号
@@ -29,9 +29,8 @@ abstract class OfficialAccount extends App
     {
         parent::__construct($appId, $appSecret, $token, $encodingAesKey, $encodingAesKeyLast, $middleUrl);
 
-        $this->ability = [
-            ...$this->ability,
-            'HandleService' => HandleService::class
-        ];
+        $this->addAbility([
+            HandleService::class => HandleService::class
+        ]);
     }
 }

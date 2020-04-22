@@ -12,5 +12,9 @@
  */
 
 return [
-    'appId' => 1
+    'appId' => '',
+    'appSecret' => '',
+    'token' => '',
+    'accessToken' => '',
+    'openId' => ''
 ];

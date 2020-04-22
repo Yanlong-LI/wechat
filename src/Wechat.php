@@ -35,7 +35,7 @@ class Wechat
     /**
      * @return array
      */
-    public function getApps(): array
+    public static function getApps(): array
     {
         return self::$apps;
     }

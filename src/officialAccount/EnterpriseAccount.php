@@ -14,14 +14,22 @@ declare(strict_types=1);
 
 namespace yanlongli\wechat\officialAccount;
 
-use yanlongli\wechat\ability\CustomerService;
+
+use yanlongli\wechat\service\ability\CustomerService;
 
 /**
  * Class EnterpriseAccount 企业号
  * @package yanlongli\wechat\officialAccount
- * @property CustomerService $CustomerService 客服消息能力
+ * @property CustomerService $MessageService 客服消息能力
  */
 class EnterpriseAccount extends OfficialAccount
 {
+    public function __construct($appId, string $appSecret = null, string $token = null, string $encodingAesKey = null, string $encodingAesKeyLast = null, string $middleUrl = null)
+    {
+        parent::__construct($appId, $appSecret, $token, $encodingAesKey, $encodingAesKeyLast, $middleUrl);
 
+        $this->addAbility([
+            CustomerService::class => CustomerService::class
+        ]);
+    }
 }

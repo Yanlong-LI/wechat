@@ -14,19 +14,16 @@ declare(strict_types=1);
 
 namespace yanlongli\wechat;
 
-
-use yanlongli\wechat\ability\Ability;
-use yanlongli\wechat\ability\AccessToken;
-use yanlongli\wechat\service\Client;
+use yanlongli\wechat\service\ability\Ability;
+use yanlongli\wechat\service\ability\BasicSupport;
 
 /**
  * Class App
  * @package yanlongli\wechat
- * @property AccessToken $AccessToken
+ * @property BasicSupport $BasicSupport 客服消息能力
  */
 abstract class App
 {
-    use Client;
 
     /**
      * 应用id
@@ -59,13 +56,13 @@ abstract class App
     public ?string $encodingAesKeyLast;
     public ?string $middleUrl;
 
-    public ?string $accessToken = '';
+//    public ?string $accessToken = '';
 
     /**
      * @var array
      */
     protected array $ability = [
-        'AccessToken' => AccessToken::class
+        'BasicSupport' => BasicSupport::class
     ];
 
     /**
@@ -102,19 +99,6 @@ abstract class App
 
     }
 
-    /**
-     * @param bool $useCache
-     * @return string
-     * @throws WechatException
-     */
-    public function getAccessToken(bool $useCache = true)
-    {
-        if ($useCache && $this->accessToken) {
-            return $this->accessToken;
-        }
-        return $this->AccessToken->getAccessToken($useCache);
-    }
-
 
     /**
      * @param $name
@@ -130,7 +114,8 @@ abstract class App
         if (is_object($ability)) {
             return $ability;
         } else if (is_string($ability)) {
-            return new $ability($this);
+            $this->ability[$name] = new $ability($this);
+            return $this->ability[$name];
         }
         throw new WechatException("获取能力失败");
     }
@@ -149,6 +134,32 @@ abstract class App
             $this->ability[$name] = new $ability($this);
         }
         throw new WechatException("设定能力失败");
+    }
+
+
+    /**
+     * 添加能力
+     * @param array|string $abilityName
+     * @param string|object|null $ability
+     * @throws WechatException
+     */
+    public function addAbility($abilityName, $ability = null)
+    {
+        if (is_string($abilityName)) {
+            $ability = [
+                basename(str_replace('\\', '/', $abilityName)) => $ability
+            ];
+        } elseif (is_array($abilityName)) {
+            $ability = [];
+            // 获取基础名称 我比较懒
+            foreach ($abilityName as $_name => $_ability) {
+                $ability[basename(str_replace('\\', '/', $_name))] = $_ability;
+            }
+        } else {
+            throw new WechatException("不支持的能力");
+        }
+
+        $this->ability += $ability;
     }
 
 }

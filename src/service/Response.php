@@ -19,13 +19,20 @@ use stdClass;
 
 abstract class Response
 {
+    protected array $dataKeyAlias = [];
 
-    protected array $data;
-
-    public function __construct(string $result)
+    public function __construct(stdClass $resultObj)
     {
-        $resultObj = json_decode($result);
+        $this->dataKeyAlias = $this->setDataKeyAlias();
         $this->FillData($resultObj, $this);
+    }
+
+    /**
+     * 设置属性别名
+     */
+    protected function setDataKeyAlias(): array
+    {
+        return [];
     }
 
     /**
@@ -33,19 +40,15 @@ abstract class Response
      * @param StdClass $data
      * @param mixed $obj 填充对象
      */
-    public function FillData($data, $obj): void
+    protected function FillData($data, $obj): void
     {
         foreach ($data as $key => $item) {
             if (is_object($item)) {
-                $itemObj = new $key();
-                $this->FillData($item, $itemObj);
-                $obj->$key = $itemObj;
+                $obj->$key = $this->FillNewObject($key, $item);
             } elseif (is_array($item)) {
                 $obj->$key = [];
                 foreach ($item as $value) {
-                    $valueObj = new $key();
-                    $this->FillData($value, $valueObj);
-                    $obj->$key[] = $valueObj;
+                    $obj->$key[] = $this->FillNewObject($key, $value);
                 }
             } else {
                 $obj->$key = $item;
@@ -53,13 +56,17 @@ abstract class Response
         }
     }
 
-    public function __get($name)
+    /**
+     * 配个 FillData 创建对应的新对象并返回
+     * @param $key
+     * @param $item
+     * @return mixed
+     */
+    protected function FillNewObject($key, $item)
     {
-        return $this->data[$name] ?? null;
-    }
-
-    public function __set($name, $value)
-    {
-        $this->data[$name] = $value;
+        $itemObjKey = isset($this->dataKeyAlias[$key]) ? $this->dataKeyAlias[$key] : $key;
+        $itemObj = new $itemObjKey();
+        $this->FillData($item, $itemObj);
+        return $itemObj;
     }
 }

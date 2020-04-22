@@ -9,12 +9,17 @@
  * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
  * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
+ *
+ *   Author: Yanlongli <jobs@yanlongli.com>
+ *   Date:   2020/4/22
+ *   IDE:    PhpStorm
+ *   Desc:   图片消息
  */
 declare(strict_types=1);
 
 namespace yanlongli\wechat\messaging\message;
 
-use yanlongli\wechat\messaging\contract\MassMessage;
+use yanlongli\wechat\messaging\contract\CallMessage;
 use yanlongli\wechat\messaging\contract\ReplyMessage;
 
 /**
@@ -23,7 +28,7 @@ use yanlongli\wechat\messaging\contract\ReplyMessage;
  * @author  Zou Yiliang
  * @license MIT
  */
-class Image implements ReplyMessage, MassMessage
+class Image implements ReplyMessage, CallMessage
 {
     protected string $type = 'image';
     protected string $mediaId;
@@ -46,10 +51,11 @@ class Image implements ReplyMessage, MassMessage
      */
     public function xmlData()
     {
-        return array(
-            'Image' => array(
+        return [
+            'Image' => [
                 'MediaId' => $this->mediaId,
-            ));
+            ]
+        ];
     }
 
     /**
@@ -57,9 +63,10 @@ class Image implements ReplyMessage, MassMessage
      */
     public function jsonData()
     {
-        return array(
-            'image' => array(
+        return [
+            'image' => [
                 'media_id' => $this->mediaId,
-            ));
+            ]
+        ];
     }
 }

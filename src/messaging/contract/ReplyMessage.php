@@ -23,5 +23,13 @@ namespace yanlongli\wechat\messaging\contract;
  */
 interface ReplyMessage extends Message
 {
+    /**
+     * @return array
+     */
+    public function xmlData();
 
+    /**
+     * @return string
+     */
+    public function type();
 }

@@ -12,23 +12,23 @@
  */
 declare(strict_types=1);
 
-use yanlongli\wechat\ability\OAuth2;
-use yanlongli\wechat\officialAccount\OfficialAccount;
+use yanlongli\wechat\officialAccount\ServiceAccount;
 use yanlongli\wechat\support\Config;
 use yanlongli\wechat\WechatException;
 
+xdebug_start_trace();
 include '../vendor/autoload.php';
 Config::loadConfigFile(__DIR__ . '/config.php');
 
-$officialAccount = new OfficialAccount(Config::get('config.'));
+$officialAccount = new ServiceAccount(Config::get('config.'));
 
 try {
     session_start();
-
-    $user = $_SESSION['wechat'] ??= OAuth2::getOpenid($officialAccount);
-    var_dump($_SESSION);
-
-    var_dump($user);
+    echo 1;
+//    $user = $_SESSION['wechat'] ??= $officialAccount->OAuth2->getOpenid();
+//    var_dump($_SESSION);
+//
+//    var_dump($user);
 //    CallMessageService::send($officialAccount, $user, new Text("hello"));
 //    TemplateMessageService::send($officialAccount, $user, new \yanlongli\wechat\messaging\message\Template('ofPaNraz-JVnIHLWhNyACUSDS1ulQnxvLi1GKMVaWbU', [
 //        'user' => '管理员'

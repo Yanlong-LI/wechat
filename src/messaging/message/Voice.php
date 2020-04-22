@@ -38,9 +38,11 @@ class Voice implements ReplyMessage, MassMessage
      */
     public function xmlData()
     {
-        return ['Voice' => [
-            'MediaId' => $this->voice
-        ]];
+        return [
+            'Voice' => [
+                'MediaId' => $this->voice
+            ]
+        ];
     }
 
     /**
@@ -56,9 +58,11 @@ class Voice implements ReplyMessage, MassMessage
      */
     public function jsonData()
     {
-        return ['voice' => [
-            'media_id' => $this->voice,
-        ]];
+        return [
+            'voice' => [
+                'media_id' => $this->voice,
+            ]
+        ];
     }
 
 }

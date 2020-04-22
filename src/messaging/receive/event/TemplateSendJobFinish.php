@@ -19,6 +19,8 @@ use yanlongli\wechat\messaging\receive\EventMessage;
 /**
  * Class TemplateSendJobFinish 模板消息推送反馈事件
  * @package yanlongli\wechat\messaging\receive\event
+ * @property string Status 发送状态
+ * @property int MsgID 消息ID
  */
 class TemplateSendJobFinish extends EventMessage
 {

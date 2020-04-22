@@ -13,24 +13,24 @@
 declare(strict_types=1);
 
 
-use yanlongli\wechat\ability\CustomerService;
-use yanlongli\wechat\messaging\message\MsgMenu;
-use yanlongli\wechat\officialAccount\OfficialAccount;
+use yanlongli\wechat\officialAccount\SubscriptionAccount;
 use yanlongli\wechat\support\Config;
-use yanlongli\wechat\Wechat;
 use yanlongli\wechat\WechatException;
 
 include __DIR__ . '/../vendor/autoload.php';
 
-$wechat = new Wechat();
-$app = new OfficialAccount(Config::get('config'), '', '');
-$app->accessToken = '';
+Config::loadConfigFile(__DIR__ . '/config.php');
+//$wechat = new Wechat();
+$app = new SubscriptionAccount(Config::get('config'));
 try {
+//    $response = $app->CustomerService->sendMessage('o1_FZ6DePqRIQ5mOgfnzu5oojDPY', new Text("test"));
+    $response = $app->BasicSupport->callbackCheck();
+    var_dump($response, $app->BasicSupport->getAccessToken());
 //    CallMessageService::send($app, '', new Text("test"));
-    CustomerService::send($app, '', new MsgMenu("test", [
-        MsgMenu::option('1', '一星'),
-        MsgMenu::option('2', '二星'),
-    ], '感谢'));
+//    MessageService::send($app, '', new MsgMenu("test", [
+//        MsgMenu::option('1', '一星'),
+//        MsgMenu::option('2', '二星'),
+//    ], '感谢'));
 //    $acc = \yanlongli\wechat\service\AccountService::all($app);
 //    var_dump($app);
 } catch (WechatException $e) {

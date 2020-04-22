@@ -15,6 +15,8 @@ declare(strict_types=1);
 namespace yanlongli\wechat\messaging\message;
 
 use yanlongli\wechat\messaging\contract\CallMessage;
+use yanlongli\wechat\service\api\MessageService;
+use yanlongli\wechat\service\apis\MessageCustomTyping;
 
 /**
  * Class Typing 打字消息
@@ -22,10 +24,10 @@ use yanlongli\wechat\messaging\contract\CallMessage;
  */
 class Typing implements CallMessage
 {
-    const TYPING = 'Typing';
-    const CANCEL_TYPING = 'CancelTyping';
+    const TYPING = MessageService::Typing;
+    const CANCEL_TYPING = MessageService::CancelTyping;
 
-    protected string $type = 'Typing';
+    protected string $type = self::TYPING;
 
     /**
      * Typing constructor.

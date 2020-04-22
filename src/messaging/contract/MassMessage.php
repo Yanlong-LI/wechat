@@ -23,5 +23,10 @@ namespace yanlongli\wechat\messaging\contract;
  */
 interface MassMessage extends CallMessage
 {
+    /**
+     * @return array
+     */
+    public function jsonData();
 
+    public function type();
 }

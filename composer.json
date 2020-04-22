@@ -36,7 +36,8 @@
     "ext-simplexml": "*",
     "ext-libxml": "*",
     "ext-openssl": "*",
-    "ext-dom": "*"
+    "ext-dom": "*",
+    "ext-xdebug": "*"
   },
   "autoload": {
     "psr-4": {

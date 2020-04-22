@@ -55,4 +55,19 @@ class Text implements ReplyMessage, MassMessage
     {
         return $this->type;
     }
+
+    /**
+     * 跳转小程序链接
+     * @param $appid
+     * @param $pagePath
+     * @param $url
+     * @return string
+     */
+    public static function miniprogram(string $appid, string $pagePath, string $url, $title)
+    {
+        return <<<html
+<a href="{$url}" data-miniprogram-appid="{$appid}" data-miniprogram-path="{$pagePath}">{$title}</a>
+html;
+
+    }
 }

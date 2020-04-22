@@ -25,45 +25,73 @@ class Template implements TemplateMessage
     protected string $templateId;
     protected array $date;
     protected string $url;
-    protected string $topColor;
+    protected array $miniprogram;
 
     /**
      * Template constructor.
      * @param string $templateId
      * @param array $data
-     * @param string $url
+     * @param string|array $jumpOption 跳转 链接 或者 小程序
      * @param string $topColor
      * @param string $defaultItemColor
      */
-    public function __construct(string $templateId, array $data, string $url = '', string $topColor = '#FF0000', string $defaultItemColor = '#173177')
+    public function __construct(string $templateId, array $data, $jumpOption = null, string $defaultItemColor = '#173177')
     {
         $this->templateId = $templateId;
 
         foreach ($data as $key => $val) {
             if (!is_array($val)) {
                 $data[$key] = array(
-                    'value' => "$val",
-                    'color' => "$defaultItemColor",
+                    'value' => $val,
+                    'color' => $defaultItemColor,
                 );
             }
         }
 
         $this->date = $data;
-        $this->url = $url;
-        $this->topColor = $topColor;
+        if (is_string($jumpOption))
+            $this->url = (string)$jumpOption;
+        if (is_array($jumpOption)) {
+            $this->miniprogram = (array)$jumpOption;
+        }
 
     }
 
     /**
-     * @inheritDoc
+     * @param string $appId
+     * @param string $pagePath
+     * @param string|null $url
+     * @return array
+     */
+    public static function jumpMiniprogram(string $appId, string $pagePath, string $url = null)
+    {
+        return [
+            'miniprogram' => [
+                'appid' => $appId,
+                'pagepath' => $pagePath
+            ],
+            'url' => $url
+        ];
+    }
+
+    /**
+     * @return array|string[]
      */
     public function jsonData()
     {
+        $jumpOption = [];
+        if (isset($this->url)) {
+            $jumpOption += [
+                'url' => $this->url
+            ];
+        }
+        if (isset($this->miniprogram)) {
+            $jumpOption += $this->miniprogram;
+        }
+
         return [
-            'template_id' => $this->templateId,
-            'url' => $this->url,
-            'topcolor' => $this->topColor,
-            'data' => $this->date,
-        ];
+                'template_id' => $this->templateId,
+                'data' => $this->date,
+            ] + $jumpOption;
     }
 }
