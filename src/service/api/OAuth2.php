@@ -32,12 +32,13 @@ class OAuth2 extends Api
      * https://mp.weixin.qq.com 开发>接口权限>网页服务>网页账号>网页授权获取用户基本信息>授权回调页面域名
      *
      * @param App $app
+     * @param string|null $domain 跳转URL 默认自动识别，CDN、反向代理、负载均衡等复杂网络可能无法正确识别域名，需要手动设定
      * @return string
      * @throws WechatException
      */
-    public static function getOpenid(App $app)
+    public static function getOpenid(App $app, ?string $domain = null)
     {
-        return self::getUser($app, true)['openid'];
+        return self::getUser($app, true, $domain)['openid'];
     }
 
     /**
@@ -47,39 +48,77 @@ class OAuth2 extends Api
      *
      * @param App $app
      * @param bool|false $openidOnly 此参数为true时，仅返回openid 响应速度会更快，并且不需要用户点击同意授权
+     * @param string|null $domain 跳转URL 默认自动识别，CDN、反向代理、负载均衡等复杂网络可能无法正确识别域名，需要手动设定
      * @return array
      * @throws WechatException
      */
-    public static function getUser(App $app, bool $openidOnly = false): array
+    public static function getUser(App $app, bool $openidOnly = false, ?string $domain = null): array
     {
-        $state = 'YANLONGLI_WECHAT';
+        $state = self::STATE;
+        $code = self::getCode($app, $openidOnly, $state, $domain);
 
-        if (isset($_GET['code']) && isset($_GET['state']) && $state === $_GET['state']) {
+        //通过code换取网页授权access_token
+        $OauthAccessTokenArr = self::getOAuthAccessToken($app, $code);
 
-            //通过code换取网页授权access_token
-            $OauthAccessTokenArr = self::getOauthAccessToken($app, $_GET['code']);
+        if ($openidOnly) {
+            return $OauthAccessTokenArr;
+        }
 
-            if ($openidOnly) {
-                return $OauthAccessTokenArr;
+        //拉取用户信息(需scope为 snsapi_userinfo)
+        return self::getOAuthUserInfo($app, $OauthAccessTokenArr['openid'], $OauthAccessTokenArr['access_token']);
+    }
+
+
+    const STATE = 'YANLONGLI_WECHAT';
+
+    /**
+     * OAuth2 获取 Code 移动授权获取用户基本信息 流程第1.2步 授权后返回获取code
+     * @param App $app
+     * @param bool $openidOnly
+     * @param string $state
+     * @param string|null $domain 跳转URL 默认自动识别，CDN、反向代理、负载均衡等复杂网络可能无法正确识别域名，需要手动设定
+     * @return string
+     */
+    public static function getCode(App $app, bool $openidOnly = false, ?string $state = self::STATE, ?string $domain = null): string
+    {
+        $sessionCacheKey = 'access_code_' . $state;
+        //重新修正state
+        if ($state === null) {
+            $state = self::STATE;
+        }
+
+        if ($domain === null) {
+            if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+                $proto = strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']);
+            } else {
+                $proto = isset($_SERVER['HTTPS']) && 'off' !== strtolower($_SERVER['HTTPS']) ? 'https' : 'http';
             }
-
-            //拉取用户信息(需scope为 snsapi_userinfo)
-            return self::getOauthUserInfo($app, $OauthAccessTokenArr['openid'], $OauthAccessTokenArr['access_token']);
+            //当前url
+            $domain = $proto . '://' . $_SERVER['HTTP_HOST'];
         }
-
-        if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
-            $proto = strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']);
-        } else {
-            $proto = isset($_SERVER['HTTPS']) && 'off' !== strtolower($_SERVER['HTTPS']) ? 'https' : 'http';
+        $domain .= $_SERVER['REQUEST_URI'];
+        // 开启 session
+        if (!session_id()) session_start();
+        // 已授权
+        if (isset($_GET['code']) && isset($_GET['state']) && $state === $_GET['state']) {
+            $_SESSION[$sessionCacheKey] = $_GET['code'];
+            //第三次重定向
+            self::redirect(self::urlClean($domain));
         }
+        //最终返回授权code
+        if (isset($_SESSION[$sessionCacheKey])) {
+            // 读取授权code
+            $code = $_SESSION[$sessionCacheKey];
+            // 删除 session 缓存
+            unset($_SESSION[$sessionCacheKey]);
+            // 返回 授权 code
+            return $code;
+        }
+        //授权后跳转地址
+        $uri = self::urlClean($domain);
 
-        //当前url
-        $uri = $proto . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-
-        $uri = self::urlClean($uri);
-
-        //跳转到微信oAuth授权页面
-        self::redirect($app, $uri, $state, $openidOnly ? 'snsapi_base' : 'snsapi_userinfo');
+        //跳转到微信授权url
+        self::getOAuthAuthorizeUrl($app, $uri, $state, $openidOnly ? 'snsapi_base' : 'snsapi_userinfo');
         exit();
     }
 
@@ -98,7 +137,7 @@ class OAuth2 extends Api
      * ]
      * @throws WechatException
      */
-    public static function getOauthAccessToken(App $app, string $code)
+    public static function getOAuthAccessToken(App $app, string $code)
     {
 
         $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid={$app->appId}&secret={$app->appSecret}&code={$code}&grant_type=authorization_code";
@@ -111,6 +150,7 @@ class OAuth2 extends Api
      * @param App $app
      * @param string $openId
      * @param string $accessToken
+     * @param string $lang
      * @return array
      * [
      *    'openid'      //用户的唯一标识
@@ -123,15 +163,14 @@ class OAuth2 extends Api
      * ]
      * @throws WechatException
      */
-    public static function getOauthUserInfo(App $app, string $openId, string $accessToken)
+    public static function getOAuthUserInfo(App $app, string $openId, string $accessToken, string $lang = UserManagement::LANG_ZH_CN)
     {
-        $url = "https://api.weixin.qq.com/sns/userinfo?access_token={$accessToken}&openid={$openId}&lang=zh_CN";
+        $url = "https://api.weixin.qq.com/sns/userinfo?access_token={$accessToken}&openid={$openId}&lang=$lang";
         return self::request($app, $url);
     }
 
     /**
      * 从url中移除code参数 例如 http://www.test.com?/oauth?code=1234&params=11 将返回 http://www.test.com?/oauth?params=11
-     * @param App $app
      * @param string $uri
      * @param array $remove
      * @return string
@@ -148,7 +187,12 @@ class OAuth2 extends Api
                     unset($temp[$v]);
                 }
             }
-            $arr['query'] = http_build_query($temp);
+
+            if (count($temp) === 0) {
+                unset($arr['query']);
+            } else {
+                $arr['query'] = http_build_query($temp);
+            }
         }
 
         $arr['path'] = array_key_exists('path', $arr) ? $arr['path'] : '';
@@ -159,22 +203,10 @@ class OAuth2 extends Api
 
     /**
      * 跳转到微信平台，让用户同意授权，获取code
-     * @param App $app
-     * @param string $redirectUri
-     * @param string $state
-     * @param string $scopes
+     * @param $url
      */
-    public static function redirect(App $app, string $redirectUri, string $state = '0', string $scopes = 'snsapi_userinfo'): void
+    protected static function redirect($url): void
     {
-        //通过一个中间url
-        $middleUrl = $app->middleUrl;
-        if (null !== $middleUrl) {
-            $redirectUri = $middleUrl . ((false === strpos($middleUrl, '?')) ? '?' : '&') . 'url=' . urlencode($redirectUri);
-        }
-
-        //跳转到微信授权url
-        $url = self::getOauthAuthorizeUrl($app, $redirectUri, $state, $scopes);
-
         header('Location: ' . $url);
         exit;
     }
@@ -187,12 +219,19 @@ class OAuth2 extends Api
      * @param string $scope 应用授权作用域，snsapi_base （不弹出授权页面，直接跳转，只能获取用户openid），snsapi_userinfo（弹出授权页面，可通过openid拿到昵称、性别、所在地。并且，即使在未关注的情况下，只要用户授权，也能获取其信息）
      * @return string
      */
-    public static function getOauthAuthorizeUrl(App $app, string $redirectUri, string $state = '0', string $scope = 'snsapi_userinfo')
+    protected static function getOAuthAuthorizeUrl(App $app, string $redirectUri, string $state = '0', string $scope = 'snsapi_userinfo')
     {
+        //通过一个中间url
+        $middleUrl = $app->middleUrl;
+        if (null !== $middleUrl) {
+            $redirectUri = $middleUrl . ((false === strpos($middleUrl, '?')) ? '?' : '&') . 'url=' . urlencode($redirectUri);
+        }
 
         $redirectUri = urlencode($redirectUri);
 
-        return "https://open.weixin.qq.com/connect/oauth2/authorize?appid={$app->appId}&redirect_uri={$redirectUri}&response_type=code&scope={$scope}&state={$state}#wechat_redirect";
+        $url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid={$app->appId}&redirect_uri={$redirectUri}&response_type=code&scope={$scope}&state={$state}#wechat_redirect";
+        self::redirect($url);
+        exit;
     }
 
     /**
@@ -202,7 +241,7 @@ class OAuth2 extends Api
      * @return array
      * @throws WechatException
      */
-    public static function refreshOauthAccessToken(App $app, $refreshToken)
+    public static function refreshOAuthAccessToken(App $app, $refreshToken)
     {
         $url = "https://api.weixin.qq.com/sns/oauth2/refresh_token?appid={$app->appId}&grant_type=refresh_token&refresh_token={$refreshToken}";
         return self::request($app, $url);
@@ -228,5 +267,19 @@ class OAuth2 extends Api
         }
 
         return $result;
+    }
+
+    /**
+     * 检验授权凭证（access_token）是否有效
+     * @param App $app
+     * @param string $accessToken
+     * @param string $openId
+     * @return array
+     * @throws WechatException
+     */
+    public static function checkAccessToken(App $app, string $openId, string $accessToken)
+    {
+        $url = "https://api.weixin.qq.com/sns/auth?access_token=$accessToken&openid=$openId";
+        return self::request($app, $url);
     }
 }

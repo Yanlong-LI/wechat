@@ -1,3 +1,13 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>OAuth2.0测试</title>
+</head>
+<body>
 <?php
 /**
  * Copyright (c) [2020] [Yanlongli <jobs@yanlongli.com>]
@@ -10,69 +20,34 @@
  * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-declare(strict_types=1);
 
 use yanlongli\wechat\officialAccount\ServiceAccount;
 use yanlongli\wechat\support\Config;
 use yanlongli\wechat\WechatException;
 
-xdebug_start_trace();
 include '../vendor/autoload.php';
 Config::loadConfigFile(__DIR__ . '/config.php');
 
 $officialAccount = new ServiceAccount(Config::get('config.'));
+//var_dump($_SERVER);
+//
+//die();
 
+//OAuth2
 try {
     session_start();
-    echo 1;
-//    $user = $_SESSION['wechat'] ??= $officialAccount->OAuth2->getOpenid();
-//    var_dump($_SESSION);
-//
-//    var_dump($user);
-//    CallMessageService::send($officialAccount, $user, new Text("hello"));
-//    TemplateMessageService::send($officialAccount, $user, new \yanlongli\wechat\messaging\message\Template('ofPaNraz-JVnIHLWhNyACUSDS1ulQnxvLi1GKMVaWbU', [
-//        'user' => '管理员'
-//    ]));
-
-
-    //获取菜单
-    //    try {
-    //        $result = MenuService::all($officialAccount);
-    //        var_dump($result);
-    //    } catch (WechatException $wechatException) {
-    //        if ($wechatException->getCode() === 46003) {
-    //            echo '没有设定菜单';
-    //        }
-    //    }
-
-    // 设定菜单
-//    try {
-//        $result = MenuService::create($officialAccount, [
-//            MenuService::optionSubButton('菜单1', [
-//                MenuService::optionClick("点击事件", 'key_01'),
-//                MenuService::optionLocation('发送位置', 'key_02'),
-////                MenuService::optionNews('发送图文消息', 'Rh14NtJuVzYrugHvQEzN4QDiOKQsVXTe1ZJ3wbzhYc2dFGnD4c94VBxHTBnYmSUl'),//暂时没有素材ID
-////                MenuService::optionMedia('发送媒体消息', 'HLsinRqaJRijwHGRAaXsnePIN-VigOxhuUXjky9KBtk9uKL6gtnOnPDVFo94OANX'),//同上
-//            ]),
-//            MenuService::optionSubButton('图片类2', [
-//                MenuService::optionPicSysPhoto('拍照', 'key_05'),
-//                MenuService::optionPicPhotoOrAlbum('拍照或相册', 'key_06'),
-//                MenuService::optionPicWeixin('微信相册', 'key_07')
-//            ]),
-//            MenuService::optionSubButton('其他3', [
-//                MenuService::optionScancodePush('扫码推送', 'key_08'),
-//                MenuService::optionScancodeWaitmsg('扫码提示', 'key_09'),
-////                MenuService::optionMiniprogram('小程序', 'wx1e36f098b140fa11', '/', 'https://wechat.yanlongli.com'),
-//                MenuService::optionView('网址', 'https://wechat.yanlongli.com')
-//            ])
-//        ]);
-//        var_dump($result);
-//    } catch (WechatException $wechatException) {
-//        echo '遇到错误<br/>';
-//        var_dump($wechatException);
-//    }
-
+    //用户静默授权获取openid
+//    $_SESSION['openId'] = $officialAccount->OAuth2->getOpenid("https://wechat.yanlongli.com");
+    // 获取 静默 code
+    $_SESSION['code'] = $officialAccount->OAuth2->getCode(true, null, "https://wechat.yanlongli.com");
+//    $_SESSION['ACCESS_TOKEN'] = $officialAccount->OAuth2->getAccessToken('071fSUGf0f0yKw1sq0If0IRaHf0fSUG5');
+    var_dump($_SESSION);
 
 } catch (WechatException $e) {
     throw $e;
 }
+
+?>
+
+</body>
+</html>
