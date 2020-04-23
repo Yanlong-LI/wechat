@@ -14,13 +14,9 @@ declare(strict_types=1);
 
 namespace yanlongli\wechat\officialAccount;
 
-
-use yanlongli\wechat\service\ability\CustomerService;
-
 /**
  * Class EnterpriseAccount 企业号
  * @package yanlongli\wechat\officialAccount
- * @property CustomerService $MessageService 客服消息能力
  */
 class EnterpriseAccount extends OfficialAccount
 {
@@ -29,7 +25,6 @@ class EnterpriseAccount extends OfficialAccount
         parent::__construct($appId, $appSecret, $token, $encodingAesKey, $encodingAesKeyLast, $middleUrl);
 
         $this->addAbility([
-            CustomerService::class => CustomerService::class
         ]);
     }
 }

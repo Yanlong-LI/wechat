@@ -38,7 +38,6 @@ class CustomerService extends Ability
      */
     public function sendMessage(string $openId, CallMessage $message, ?string $account = null)
     {
-        //todo 转换成 对象处理
         return MessageService::sendMessage($this->app, $openId, $message, $account);
     }
 

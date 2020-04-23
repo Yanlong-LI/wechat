@@ -12,7 +12,6 @@
  */
 declare(strict_types=1);
 
-
 use yanlongli\wechat\officialAccount\SubscriptionAccount;
 use yanlongli\wechat\support\Config;
 use yanlongli\wechat\WechatException;
@@ -24,8 +23,17 @@ Config::loadConfigFile(__DIR__ . '/config.php');
 $app = new SubscriptionAccount(Config::get('config'));
 try {
 //    $response = $app->CustomerService->sendMessage('o1_FZ6DePqRIQ5mOgfnzu5oojDPY', new Text("test"));
-    $response = $app->BasicSupport->callbackCheck();
+
+
+    // 检查网络回调信息
+    //    $response = $app->BasicSupport->callbackCheck();
+    //获取所有用户列表
+    //    $response = $app->UserManagement->getAllUser();
+    // 获取客服列表
+    $response = $app->CustomService->getKfList();
     var_dump($response, $app->BasicSupport->getAccessToken());
+
+
 //    CallMessageService::send($app, '', new Text("test"));
 //    MessageService::send($app, '', new MsgMenu("test", [
 //        MsgMenu::option('1', '一星'),

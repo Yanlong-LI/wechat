@@ -9,13 +9,17 @@
  * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
  * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
+ *
+ *   Author: Yanlongli <jobs@yanlongli.com>
+ *   Date:   2020/4/23
+ *   IDE:    PhpStorm
+ *   Desc:   订阅号
  */
 declare(strict_types=1);
 
 namespace yanlongli\wechat\officialAccount;
 
 
-use yanlongli\wechat\service\ability\CustomerService;
 use yanlongli\wechat\service\ability\CustomerServiceManagement;
 use yanlongli\wechat\service\ability\Menu;
 use yanlongli\wechat\service\ability\UserManagement;
@@ -23,9 +27,9 @@ use yanlongli\wechat\service\ability\UserManagement;
 /**
  * Class SubscriptionAccount 订阅号
  * @package yanlongli\wechat\officialAccount
- * @property CustomerService $CustomerService 客服消息能力
  * @property UserManagement $UserManagement 用户管理
- * @property CustomerServiceManagement $KfAccount 多客服管理
+ * @property CustomerServiceManagement $CustomService 多客服管理
+ * @property Menu $Menu 菜单管理
  */
 class SubscriptionAccount extends PersonalSubscriptionAccount
 {
@@ -37,9 +41,9 @@ class SubscriptionAccount extends PersonalSubscriptionAccount
         parent::__construct($appId, $appSecret, $token, $encodingAesKey, $encodingAesKeyLast, $middleUrl);
 
         $this->addAbility([
-            'CustomerService' => CustomerService::class,
             'Menu' => Menu::class,
-            'KfAccount' => CustomerServiceManagement::class
+            'CustomService' => CustomerServiceManagement::class,
+            UserManagement::class => UserManagement::class
         ]);
     }
 }

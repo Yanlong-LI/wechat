@@ -45,6 +45,11 @@ class BasicSupport extends Ability
     {
         $cachePath = './access_token/' . md5($this->app->appId);
         if ($useCache) {
+
+            if (isset($this->accessToken)) {
+                return $this->accessToken;
+            }
+
             $expire_time = @filemtime($cachePath);
             if ($expire_time && $expire_time >= time()) {
                 return file_get_contents($cachePath);

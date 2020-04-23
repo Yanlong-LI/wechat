@@ -43,7 +43,7 @@ class TransferCustomerService implements ReplyMessage
     {
         return [
             'TransInfo' => [
-                'KfAccount' => $this->kfAccount
+                'CustomService' => $this->kfAccount
             ]
         ];
     }
@@ -61,6 +61,6 @@ class TransferCustomerService implements ReplyMessage
      */
     public function jsonData()
     {
-        return ['TransInfo' => ['KfAccount' => $this->kfAccount]];
+        return ['TransInfo' => ['CustomService' => $this->kfAccount]];
     }
 }

@@ -72,12 +72,12 @@ class UserTagService extends Api
     /**
      * 标签重命名
      * @param App $app
-     * @param string $tagId
+     * @param int $tagId
      * @param string $name
      * @return array {   "errcode":0,   "errmsg":"ok" }
      * @throws WechatException
      */
-    public static function tagRename(App $app, string $tagId, string $name)
+    public static function tagRename(App $app, int $tagId, string $name)
     {
         $url = "https://api.weixin.qq.com/cgi-bin/tags/update?access_token=ACCESS_TOKEN";
         $postData = [
@@ -90,11 +90,11 @@ class UserTagService extends Api
     /**
      * 删除标签，粉丝数大于10W时需要先撤销对应用户标签
      * @param App $app
-     * @param string $tagId
+     * @param int $tagId
      * @return array
      * @throws WechatException
      */
-    public static function delTag(App $app, string $tagId)
+    public static function delTag(App $app, int $tagId)
     {
         $url = "https://api.weixin.qq.com/cgi-bin/tags/delete?access_token=ACCESS_TOKEN";
         $postData['tag'] = ['id' => $tagId];
@@ -104,12 +104,12 @@ class UserTagService extends Api
     /**
      * 获取标签下的用户列表 -- 50个 以内
      * @param App $app
-     * @param string $tagId
+     * @param int $tagId
      * @param string $nextOpenId
      * @return array
      * @throws WechatException
      */
-    public static function tagUsers(App $app, string $tagId, string $nextOpenId = "")
+    public static function tagUsers(App $app, int $tagId, string $nextOpenId = "")
     {
         $url = "https://api.weixin.qq.com/cgi-bin/user/tag/get?access_token=ACCESS_TOKEN";
         $postData = ['tagid' => $tagId, 'next_openid' => $nextOpenId];
@@ -119,12 +119,12 @@ class UserTagService extends Api
     /**
      * 批量为用户打标签
      * @param App $app
-     * @param string $tagId
-     * @param string $openIds
+     * @param int $tagId
+     * @param string[] $openIds
      * @return array
      * @throws WechatException
      */
-    public static function batchTagging(App $app, string $tagId, string $openIds)
+    public static function batchTagging(App $app, int $tagId, array $openIds)
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/tags/members/batchtagging?access_token=ACCESS_TOKEN';
         $postData = [
@@ -137,12 +137,12 @@ class UserTagService extends Api
     /**
      * 批量取消用户标签 50 个以内
      * @param App $app
-     * @param string $tagId
-     * @param string $openIds
+     * @param int $tagId
+     * @param string[] $openIds
      * @return array
      * @throws WechatException
      */
-    public static function batchUnTagging(App $app, string $tagId, string $openIds)
+    public static function batchUnTagging(App $app, int $tagId, array $openIds)
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/tags/members/batchuntagging?access_token=ACCESS_TOKEN';
         $postData = [

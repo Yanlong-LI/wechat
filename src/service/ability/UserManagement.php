@@ -20,22 +20,202 @@ declare(strict_types=1);
 namespace yanlongli\wechat\service\ability;
 
 
+use yanlongli\wechat\service\api\UserManagement as UserManagementApi;
+use yanlongli\wechat\service\api\UserTagService;
+use yanlongli\wechat\WechatException;
+
 class UserManagement extends Ability
 {
-    //todo 创建标签
-    //todo 获取标签列表
-    //todo 编辑标签
-    //todo 删除标签
-    //todo 标签下粉丝列表
-    //todo 批量为用户打标签
-    //todo 批量为用户取消标签
-    //todo 获取用户身上的标签
-    //todo 为用户设置备注 服务号
+
+    //创建标签
+
+    /**
+     * 创建标签
+     * @param $tagName
+     * @return array
+     * @throws WechatException
+     */
+    public function createTag($tagName)
+    {
+        return UserTagService::createTag($this->app, $tagName);
+    }
+
+    //获取标签列表
+
+    /**
+     * 获取公众号已创建的标签列表
+     * @return array
+     * @throws WechatException
+     */
+    public function tags()
+    {
+        return UserTagService::tags($this->app);
+    }
+
+    //编辑标签
+
+    /**
+     * 编辑标签 标签改名
+     * @param int $tagId
+     * @param string $tagName
+     * @return array
+     * @throws WechatException
+     */
+    public function updateTag(int $tagId, string $tagName)
+    {
+        return UserTagService::tagRename($this->app, $tagId, $tagName);
+    }
+
+    //删除标签
+
+    /**
+     * 删除标签
+     * @param int $tagId
+     * @return array
+     * @throws WechatException
+     */
+    public function delTag(int $tagId)
+    {
+        return UserTagService::delTag($this->app, $tagId);
+    }
+
+    //标签下粉丝列表
+
+    /**
+     * 标签下粉丝列表
+     * @param int $tagId
+     * @return array
+     * @throws WechatException
+     */
+    public function usersForTag(int $tagId)
+    {
+        return UserTagService::tagUsers($this->app, $tagId);
+    }
+
+    //批量为用户打标签
+
+    /**
+     * 批量为用户打标签
+     * @param int $tagId
+     * @param array $openIds
+     * @return array
+     * @throws WechatException
+     */
+    public function batchTagging(int $tagId, array $openIds)
+    {
+        return UserTagService::batchTagging($this->app, $tagId, $openIds);
+    }
+
+    //批量为用户取消标签
+
+    /**
+     * 批量为用户取消标签
+     * @param int $tagId
+     * @param string[] $openIds
+     * @return array
+     * @throws WechatException
+     */
+    public function batchUnTagging(int $tagId, array $openIds)
+    {
+        return UserTagService::batchUnTagging($this->app, $tagId, $openIds);
+    }
+
+    //获取用户身上的标签
+
+    /**
+     * 获取用户身上的标签
+     * @param string $openId openID
+     * @return array
+     * @throws WechatException
+     */
+    public function getUserTags(string $openId)
+    {
+        return UserTagService::getUserTags($this->app, $openId);
+    }
+
+    //为用户设置备注 服务号
+    const LANG_ZH_CN = UserManagementApi::LANG_ZH_CN;
+    const LANG_ZH_TW = UserManagementApi::LANG_ZH_TW;
+    const LANG_EN = UserManagementApi::LANG_EN;
+
+    /**
+     * 为用户设置备注 服务号
+     * @param string $openId
+     * @param string $lang 返回国家地区语言版本，zh_CN 简体，zh_TW 繁体，en 英语
+     * @return array
+     * @throws WechatException
+     */
+    public function getUserInfo(string $openId, string $lang = self::LANG_ZH_CN)
+    {
+        return UserManagementApi::get($this->app, $openId);
+    }
+
     //todo 获取用户基本信息 UnionID
-    //todo 批量获取用户基本信息
-    //todo 获取用户列表 公众号
-    //todo 获取公众号黑名单列表
-    //todo 拉黑用户
-    //todo 取消拉黑用户
+//    public function getUserInfo2($_)
+//    {
+//        return UserManagementApi::
+//    }
+    //批量获取用户基本信息
+    /**
+     * 批量获取用户基本信息
+     * @param string[] $openIds 最多100条记录
+     * @param string $lang 返回国家地区语言版本，zh_CN 简体，zh_TW 繁体，en 英语
+     * @return array
+     * @throws WechatException
+     */
+    public function batchGetUsers(array $openIds, string $lang = self::LANG_ZH_CN)
+    {
+        return UserManagementApi::batchGet($this->app, $openIds, $lang);
+    }
+
+    //获取用户列表 公众号
+
+    /**
+     * 获取用户列表 公众号
+     * @param string $nextOpenId
+     * @return array
+     * @throws WechatException
+     */
+    public function getAllUser(string $nextOpenId = '')
+    {
+        return UserManagementApi::all($this->app, $nextOpenId);
+    }
+
+    //获取公众号黑名单列表
+
+    /**
+     * 获取公众号黑名单列表
+     * @param string $nextOpenId
+     * @return array
+     * @throws WechatException
+     */
+    public function getBlackList(string $nextOpenId = '')
+    {
+        return UserManagementApi::getBlackList($this->app, $nextOpenId);
+    }
+
+    // 拉黑用户
+
+    /**
+     * 拉黑用户
+     * @param string[] $openIds
+     * @return array
+     * @throws WechatException
+     */
+    public function batchBlackList(array $openIds)
+    {
+        return UserManagementApi::batchBlackList($this->app, $openIds);
+    }
+    // 取消拉黑用户
+
+    /**
+     * 取消拉黑用户
+     * @param string[] $openIds
+     * @return array
+     */
+    public function batchUnBlackList(array $openIds)
+    {
+        return UserManagementApi::batchUnBlackList($this->app, $openIds);
+    }
 
 }

@@ -117,23 +117,17 @@ abstract class App
             $this->ability[$name] = new $ability($this);
             return $this->ability[$name];
         }
-        throw new WechatException("获取能力失败");
+        throw new WechatException("App 初始化功能 $name 失败");
     }
 
     /**
      * 设置能力
      * @param $name
      * @param $ability
-     * @throws WechatException
      */
     public function __set($name, $ability)
     {
-        if (is_object($ability)) {
-            $this->ability[$name] = $ability;
-        } else if (is_string($ability)) {
-            $this->ability[$name] = new $ability($this);
-        }
-        throw new WechatException("设定能力失败");
+        $this->ability[$name] = $ability;
     }
 
 
@@ -156,7 +150,7 @@ abstract class App
                 $ability[basename(str_replace('\\', '/', $_name))] = $_ability;
             }
         } else {
-            throw new WechatException("不支持的能力");
+            throw new WechatException("App 启用功能必须是功能对象或功能类");
         }
 
         $this->ability += $ability;

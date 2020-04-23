@@ -14,31 +14,24 @@ declare(strict_types=1);
 
 namespace yanlongli\wechat\officialAccount;
 
-use yanlongli\wechat\service\ability\CustomerService;
+use yanlongli\wechat\service\ability\AccountManagement;
 use yanlongli\wechat\service\ability\Menu;
 use yanlongli\wechat\service\ability\OAuth2;
-use yanlongli\wechat\service\ability\Qrcode;
-use yanlongli\wechat\service\ability\UserManagement;
 
 /**
  * Class ServiceAccount 服务号
  * @package yanlongli\wechat\officialAccount
- * @property CustomerService $MessageService 客服消息能力
- * @property Qrcode $Qrcode 生成带参数二维码
- * @property UserManagement $UserManagement 生成带参数二维码
- * @property OAuth2 $OAuth2 OAuth2
- * @property Menu $Menu 菜单管理
+ * @property AccountManagement $AccountManagement 账号服务
+ * @property OAuth2 $OAuth2 OAuth2 网页授权
  */
-class ServiceAccount extends OfficialAccount
+class ServiceAccount extends SubscriptionAccount
 {
     public function __construct($appId, string $appSecret = null, string $token = null, string $encodingAesKey = null, string $encodingAesKeyLast = null, string $middleUrl = null)
     {
         parent::__construct($appId, $appSecret, $token, $encodingAesKey, $encodingAesKeyLast, $middleUrl);
 
         $this->addAbility([
-            'UserManagement' => UserManagement::class,
-            'OAuth2' => OAuth2::class,
-            'Qrcode' => Qrcode::class,
+            'AccountManagement' => AccountManagement::class,
             'Menu' => Menu::class,
         ]);
     }

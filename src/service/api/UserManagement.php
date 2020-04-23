@@ -23,6 +23,11 @@ use yanlongli\wechat\WechatException;
 class UserManagement extends Api
 {
 
+
+    const LANG_ZH_CN = 'zh_CN';
+    const LANG_ZH_TW = 'zh_TW';
+    const LANG_EN = 'en';
+
     /**
      * 获取用户基本信息
      * @param App $app
@@ -48,7 +53,7 @@ class UserManagement extends Api
      *    ]
      * @throws WechatException
      */
-    public static function get(App $app, string $openid, string $lang = 'zh_CN')
+    public static function get(App $app, string $openid, string $lang = self::LANG_ZH_CN)
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=%s&lang=%s';
         $url = sprintf($url, $openid, $lang);
@@ -92,16 +97,14 @@ class UserManagement extends Api
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/user/info/batchget?access_token=ACCESS_TOKEN';
 
-        $data = array();
+        $data = [];
         foreach ($openIds as $openid) {
             $data[] = array('openid' => $openid, 'lang' => $lang);
         }
 
-        $data = array('user_list' => $data);
+        $data = ['user_list' => $data];
 
-        $result = self::request($app, $url, $data);
-
-        return $result['user_info_list'];
+        return self::request($app, $url, $data)['user_info_list'];
     }
 
     /**
@@ -119,10 +122,61 @@ class UserManagement extends Api
      */
     public static function all(App $app, string $nextOpenId = '')
     {
-        $url = "https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid=%s";
-        $url = sprintf($url, $nextOpenId);
+        //原始URL
+        $url = "https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid=NEXT_OPENID";
+        // 替换参数
+        $url = str_replace('NEXT_OPENID', $nextOpenId, $url);
 
         return self::request($app, $url);
+    }
+
+    /**
+     * 获取黑名单列表
+     * @param App $app
+     * @param string $beginOpenId 开始拉取索引openid
+     * @return array
+     * @throws WechatException
+     * @link https://developers.weixin.qq.com/doc/offiaccount/User_Management/Manage_blacklist.html
+     */
+    public static function getBlackList(App $app, string $beginOpenId = '')
+    {
+        $postData = [
+            'begin_openid' => $beginOpenId
+        ];
+
+        $url = 'https://api.weixin.qq.com/cgi-bin/tags/members/getblacklist?access_token=ACCESS_TOKEN';
+        return self::request($app, $url, $postData);
+    }
+
+    /**
+     * 批量拉黑用户
+     * @param App $app
+     * @param string[] $openIds
+     * @return array
+     * @throws WechatException
+     */
+    public static function batchBlackList(App $app, array $openIds)
+    {
+        $postData = [
+            'openid_list' => $openIds
+        ];
+        $url = 'https://api.weixin.qq.com/cgi-bin/tags/members/batchblacklist?access_token=ACCESS_TOKEN';
+        return self::request($app, $url, $postData);
+    }
+
+    /**
+     * @param App $app
+     * @param array $openIds
+     * @return array
+     * @throws WechatException
+     */
+    public static function batchUnBlackList(App $app, array $openIds)
+    {
+        $postData = [
+            'openid_list' => $openIds
+        ];
+        $url = 'https://api.weixin.qq.com/cgi-bin/tags/members/batchunblacklist?access_token=ACCESS_TOKEN';
+        return self::request($app, $url, $postData);
     }
 
 

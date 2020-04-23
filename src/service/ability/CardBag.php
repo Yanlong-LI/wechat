@@ -11,17 +11,19 @@
  *   See the Mulan PSL v1 for more details.
  *
  *   Author: Yanlongli <jobs@yanlongli.com>
- *   Date:   2020/4/21
+ *   Date:   2020/4/23
  *   IDE:    PhpStorm
- *   Desc:   _
+ *   Desc:   微信卡包
  */
 declare(strict_types=1);
 
 namespace yanlongli\wechat\service\ability;
 
-
-class Qrcode extends Ability
+/**
+ * Class CardBag
+ * @package yanlongli\wechat\service\ability
+ */
+class CardBag extends Ability
 {
-    //todo 生成带参数二维码 分永久和临时
-    //todo 长连接转短链接
+
 }

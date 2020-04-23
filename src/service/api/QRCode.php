@@ -22,7 +22,7 @@ use yanlongli\wechat\WechatException;
  * @author  Zou Yiliang
  * @since   1.0
  */
-class Qrcode extends Api
+class QRCode extends Api
 {
 
     /**
@@ -42,7 +42,7 @@ class Qrcode extends Api
      * ]
      * @throws WechatException
      */
-    public static function temporary(App $app, string $sceneId, int $expireSeconds = null)
+    public static function temporary(App $app, $sceneId, ?int $expireSeconds = null)
     {
 
         $url = 'https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=ACCESS_TOKEN';

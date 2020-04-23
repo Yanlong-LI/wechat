@@ -49,30 +49,6 @@ abstract class Ability
     //todo 推送订阅模板消息到授权微信用户 https://api.weixin.qq.com/cgi-bin/message/template/subscribe?access_token=ACCESS_TOKEN
     //todo 获取微信公众号自动回复规则 https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Getting_Rules_for_Auto_Replies.html
 
-    //todo 数据统计
-    //todo 获取用户增减数据
-    //todo 获取累计用户数据
-    //todo 获取图文群发每日数据
-    //todo 获取图文群发总数据
-    //todo 获取图文统计数据
-    //todo 获取图文统计分时数据
-    //todo 获取图文分享转发数据
-    //todo 获取图文分享转发分时数据
-
-    //todo 获取消息发送概况
-    //todo 获取消息发送分时数据
-    //todo 获取消息发送周数据
-    //todo 获取消息发送月数据
-    //todo 获取消息发送分布数据
-    //todo 获取消息发送分布周数据
-    //todo 获取消息发送分布月数据
-
-    //todo 获取公众号广告汇总数据
-    //todo 获取公众号返佣商品数据
-
-    //todo 获取接口分析数据
-    //todo 获取接口分析分时数据
-
     //todo 微信卡券  这个比较复杂
 
     //todo 微信门店 这个比较复杂
