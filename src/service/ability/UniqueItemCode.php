@@ -19,7 +19,10 @@ declare(strict_types=1);
 
 namespace yanlongli\wechat\service\ability;
 
-
+/**
+ * Class UniqueItemCode
+ * @package yanlongli\wechat\service\ability
+ */
 class UniqueItemCode extends Ability
 {
     //todo 一物一码

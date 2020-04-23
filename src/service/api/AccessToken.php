@@ -34,11 +34,8 @@ class AccessToken extends Api
     public static function getAccessToken(App $app, bool $useCache = true)
     {
 
-//        return '32_jfWktdsNn0H2Kl251VAedad5pqFUP4y_AIjZWCXiGbYeXdvQR2zOJOKILO3omeeb4-3OYjYUIpZWRxjEBy2gx5LfPSt3thkuvV56RbA5UTYd5pIkXiIGcVxMPhB8gB9SVqsmbSuTwcOVm65aFQDiAHAZKX';
         $url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET';
         $response = self::request($app, $url);
-//        $arr = Json::parseOrFail($response);
-
         return $response['access_token'];
     }
 }

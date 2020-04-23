@@ -20,10 +20,15 @@ declare(strict_types=1);
 namespace yanlongli\wechat\officialAccount;
 
 
+use yanlongli\wechat\service\ability\Analytics;
+use yanlongli\wechat\service\ability\CommentsManagement;
 use yanlongli\wechat\service\ability\CustomerServiceManagement;
+use yanlongli\wechat\service\ability\Invoice;
 use yanlongli\wechat\service\ability\MassMessage;
+use yanlongli\wechat\service\ability\Material;
 use yanlongli\wechat\service\ability\Menu;
 use yanlongli\wechat\service\ability\UserManagement;
+use yanlongli\wechat\service\ability\WeChatStores;
 
 /**
  * Class SubscriptionAccount 订阅号
@@ -32,6 +37,11 @@ use yanlongli\wechat\service\ability\UserManagement;
  * @property CustomerServiceManagement $CustomService 多客服管理
  * @property MassMessage $MassMessage 消息群发
  * @property Menu $Menu 菜单管理
+ * @property Invoice Invoice 微信电子发票
+ * @property WeChatStores WeChatStores 微信门店
+ * @property Analytics Analytics 统计分析
+ * @property Material Material 素材管理
+ * @property CommentsManagement CommentsManagement 评论管理
  */
 class SubscriptionAccount extends PersonalSubscriptionAccount
 {
@@ -47,6 +57,11 @@ class SubscriptionAccount extends PersonalSubscriptionAccount
             'CustomService' => CustomerServiceManagement::class,
             UserManagement::class => UserManagement::class,
             MassMessage::class => MassMessage::class,
+            Invoice::class => Invoice::class,
+            WeChatStores::class => WeChatStores::class,
+            Analytics::class => Analytics::class,
+            Material::class => Material::class,
+            CommentsManagement::class => CommentsManagement::class,
         ]);
     }
 }

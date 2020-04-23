@@ -213,4 +213,7 @@ class Material extends Api
 
         return static::request($app, $url, $data);
     }
+
+    //todo 上传临时媒体文件到服务器 小程序 https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/customer-message/customerServiceMessage.uploadTempMedia.html
+
 }

@@ -15,9 +15,16 @@ declare(strict_types=1);
 namespace yanlongli\wechat\officialAccount;
 
 use yanlongli\wechat\service\ability\AccountManagement;
+use yanlongli\wechat\service\ability\ConnectingDevices;
+use yanlongli\wechat\service\ability\InstantStores;
+use yanlongli\wechat\service\ability\IntelligentInterface;
 use yanlongli\wechat\service\ability\MassMessage;
 use yanlongli\wechat\service\ability\MassMessagePlus;
+use yanlongli\wechat\service\ability\NonTaxPay;
 use yanlongli\wechat\service\ability\OAuth2;
+use yanlongli\wechat\service\ability\ShoppingGuide;
+use yanlongli\wechat\service\ability\UniqueItemCode;
+use yanlongli\wechat\service\ability\WiFiViaWeChat;
 
 /**
  * Class ServiceAccount 服务号
@@ -25,6 +32,13 @@ use yanlongli\wechat\service\ability\OAuth2;
  * @property AccountManagement $AccountManagement 账号服务
  * @property OAuth2 $OAuth2 OAuth2 网页授权
  * @property MassMessagePlus $MassMessage 消息群发
+ * @property UniqueItemCode UniqueItemCode 一物一码
+ * @property NonTaxPay NonTaxPay 非税缴费
+ * @property WiFiViaWeChat WiFiViaWeChat 微信连WiFi
+ * @property ShoppingGuide ShoppingGuide 微信导购
+ * @property ConnectingDevices ConnectingDevices 微信设备功能
+ * @property IntelligentInterface IntelligentInterface 智能接口
+ * @property InstantStores InstantStores 智能接口
  */
 class ServiceAccount extends SubscriptionAccount
 {
@@ -36,6 +50,13 @@ class ServiceAccount extends SubscriptionAccount
             OAuth2::class => OAuth2::class,
             'AccountManagement' => AccountManagement::class,
             MassMessage::class => MassMessagePlus::class,
+            UniqueItemCode::class => UniqueItemCode::class,
+            NonTaxPay::class => NonTaxPay::class,
+            WiFiViaWeChat::class => WiFiViaWeChat::class,
+            ShoppingGuide::class => ShoppingGuide::class,
+            ConnectingDevices::class => ConnectingDevices::class,
+            IntelligentInterface::class => IntelligentInterface::class,
+            InstantStores::class => InstantStores::class,
         ]);
     }
 }

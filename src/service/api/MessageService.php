@@ -264,4 +264,7 @@ class MessageService extends Api
         $url = 'https://api.weixin.qq.com/cgi-bin/get_current_autoreply_info?access_token=ACCESS_TOKEN';
         return self::request($app, $url);
     }
+
+    //todo 下发小程序和公众号统一的服务消息 https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/uniform-message/uniformMessage.send.html
+
 }

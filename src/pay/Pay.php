@@ -22,5 +22,5 @@ use yanlongli\wechat\App;
  */
 class Pay extends App
 {
-
+    //todo 微信支付
 }

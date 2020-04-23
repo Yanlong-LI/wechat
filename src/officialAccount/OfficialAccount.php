@@ -30,7 +30,7 @@ abstract class OfficialAccount extends App
         parent::__construct($appId, $appSecret, $token, $encodingAesKey, $encodingAesKeyLast, $middleUrl);
 
         $this->addAbility([
-            HandleService::class => HandleService::class
+            HandleService::class => HandleService::class,
         ]);
     }
 }

@@ -139,7 +139,6 @@ class OAuth2 extends Api
      */
     public static function getOAuthAccessToken(App $app, string $code)
     {
-
         $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid={$app->appId}&secret={$app->appSecret}&code={$code}&grant_type=authorization_code";
 
         return self::request($app, $url);

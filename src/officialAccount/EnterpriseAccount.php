@@ -27,4 +27,8 @@ class EnterpriseAccount extends OfficialAccount
         $this->addAbility([
         ]);
     }
+
+    //todo 企业内部
+    //todo 第三方应用开发
+    //todo 智慧硬件开发
 }
