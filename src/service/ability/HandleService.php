@@ -58,33 +58,6 @@ class HandleService extends Ability
     protected ?string $encryptType = null;
 
     /**
-     * 验证签名验证
-     * @return bool
-     */
-    protected function checkSignature(): bool
-    {
-        $tmpArr = array($this->app->accessToken, Request::param('timestamp'), Request::param('nonce'));
-        sort($tmpArr, SORT_STRING);
-        $tmpStr = implode($tmpArr);
-        $tmpStr = sha1($tmpStr);
-
-        return Request::param('signature') === $tmpStr;
-    }
-
-    /**
-     * 处理首次配置
-     * @return bool
-     */
-    protected function handleFirstOption(): bool
-    {
-        //先处理签名验证
-        if (Request::has('echostr') && Request::has('nonce')) {
-            return $this->checkSignature();
-        }
-        return true;
-    }
-
-    /**
      * 注册事件处理函数
      * @param callable $function
      * @throws ReflectionException
@@ -175,40 +148,30 @@ class HandleService extends Ability
     }
 
     /**
-     * 构造响应xml字符串，用于微信服务器请求时被动响应
-     * @return string
-     * @throws WechatException
+     * 处理首次配置
+     * @return bool
      */
-    public function buildReply()
+    protected function handleFirstOption(): bool
     {
-        //回复的消息为NoReply，会返回给微信一个"success"，微信服务器不会对此作任何处理，并且不会发起重试
-        if (is_null($this->receiveMessage->getReplyMessage())) {
-            return 'success';
+        //先处理签名验证
+        if (Request::has('echostr') && Request::has('nonce')) {
+            return $this->checkSignature();
         }
+        return true;
+    }
 
-        if (!$this->receiveMessage->getReplyMessage() instanceof ReplyMessage) {
-            throw new WechatException('Argument ReplyMessage must implement interface ReplyMessage');
-        }
+    /**
+     * 验证签名验证
+     * @return bool
+     */
+    protected function checkSignature(): bool
+    {
+        $tmpArr = array($this->app->accessToken, Request::param('timestamp'), Request::param('nonce'));
+        sort($tmpArr, SORT_STRING);
+        $tmpStr = implode($tmpArr);
+        $tmpStr = sha1($tmpStr);
 
-
-        $data = array(
-            'ToUserName' => $this->receiveMessage->FromUserName,
-            'FromUserName' => $this->receiveMessage->ToUserName,
-            'CreateTime' => time(),
-            'MsgType' => $this->receiveMessage->getReplyMessage()->type(),
-        );
-
-        $data = array_merge($data, $this->receiveMessage->getReplyMessage()->xmlData());
-
-        if ($this->app instanceof OfficialAccount) {
-
-            $data = Xml::build($data);
-        } else if ($this->app instanceof MiniProgram) {
-            $data = Json::encode($data);
-        }
-
-        return $this->attemptEncrypt($data);
-
+        return Request::param('signature') === $tmpStr;
     }
 
     /**
@@ -253,7 +216,6 @@ class HandleService extends Ability
         throw new WechatException('unknown encrypt type: ' . $this->encryptType);
     }
 
-
     /**
      * 解密
      * @param string $msgSignature
@@ -279,6 +241,43 @@ class HandleService extends Ability
         }
 
         throw new WechatException('decrypt msg error. error code ' . $errCode);
+    }
+
+    /**
+     * 构造响应xml字符串，用于微信服务器请求时被动响应
+     * @return string
+     * @throws WechatException
+     */
+    public function buildReply()
+    {
+        //回复的消息为NoReply，会返回给微信一个"success"，微信服务器不会对此作任何处理，并且不会发起重试
+        if (is_null($this->receiveMessage->getReplyMessage())) {
+            return 'success';
+        }
+
+        if (!$this->receiveMessage->getReplyMessage() instanceof ReplyMessage) {
+            throw new WechatException('Argument ReplyMessage must implement interface ReplyMessage');
+        }
+
+
+        $data = array(
+            'ToUserName' => $this->receiveMessage->FromUserName,
+            'FromUserName' => $this->receiveMessage->ToUserName,
+            'CreateTime' => time(),
+            'MsgType' => $this->receiveMessage->getReplyMessage()->type(),
+        );
+
+        $data = array_merge($data, $this->receiveMessage->getReplyMessage()->xmlData());
+
+        if ($this->app instanceof OfficialAccount) {
+
+            $data = Xml::build($data);
+        } else if ($this->app instanceof MiniProgram) {
+            $data = Json::encode($data);
+        }
+
+        return $this->attemptEncrypt($data);
+
     }
 
     /**

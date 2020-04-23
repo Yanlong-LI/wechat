@@ -15,7 +15,8 @@ declare(strict_types=1);
 namespace yanlongli\wechat\officialAccount;
 
 use yanlongli\wechat\service\ability\AccountManagement;
-use yanlongli\wechat\service\ability\Menu;
+use yanlongli\wechat\service\ability\MassMessage;
+use yanlongli\wechat\service\ability\MassMessagePlus;
 use yanlongli\wechat\service\ability\OAuth2;
 
 /**
@@ -23,6 +24,7 @@ use yanlongli\wechat\service\ability\OAuth2;
  * @package yanlongli\wechat\officialAccount
  * @property AccountManagement $AccountManagement 账号服务
  * @property OAuth2 $OAuth2 OAuth2 网页授权
+ * @property MassMessagePlus $MassMessage 消息群发
  */
 class ServiceAccount extends SubscriptionAccount
 {
@@ -31,8 +33,9 @@ class ServiceAccount extends SubscriptionAccount
         parent::__construct($appId, $appSecret, $token, $encodingAesKey, $encodingAesKeyLast, $middleUrl);
 
         $this->addAbility([
+            OAuth2::class => OAuth2::class,
             'AccountManagement' => AccountManagement::class,
-            'Menu' => Menu::class,
+            MassMessage::class => MassMessagePlus::class,
         ]);
     }
 }

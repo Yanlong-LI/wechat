@@ -59,7 +59,7 @@ class BasicSupport extends Ability
 
         $this->setAccessToken($accessToken);
 
-        if (!is_dir($cachePath)) {
+        if (!is_dir($cachePath) || !file_exists($cachePath)) {
             mkdir(dirname($cachePath), 0777, true);
         }
 

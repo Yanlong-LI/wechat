@@ -19,7 +19,6 @@ declare(strict_types=1);
 
 namespace yanlongli\wechat\service\ability;
 
-
 use yanlongli\wechat\messaging\contract\CallMessage;
 use yanlongli\wechat\messaging\message\Template;
 use yanlongli\wechat\service\api\MessageService;
@@ -51,5 +50,14 @@ class CustomerService extends Ability
     public function sendTemplateMessage(string $openId, Template $message)
     {
         return TemplateMessage::send($this->app, $openId, $message);
+    }
+
+    /**
+     * 获取公众号的自动回复规则
+     * @return array
+     */
+    public function getCurrentAutoReplyInfo()
+    {
+        return MessageService::getCurrentAutoReplyInfo($this->app);
     }
 }

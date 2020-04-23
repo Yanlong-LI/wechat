@@ -43,11 +43,6 @@ class MsgMenu implements CallMessage
         $this->tail = $tail;
     }
 
-    public function type()
-    {
-        return $this->type;
-    }
-
     /**
      * @param string $id
      * @param string $title
@@ -56,6 +51,11 @@ class MsgMenu implements CallMessage
     public static function option(string $id, string $title)
     {
         return ['id' => $id, 'title' => $title];
+    }
+
+    public function type()
+    {
+        return $this->type;
     }
 
     /**

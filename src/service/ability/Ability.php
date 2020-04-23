@@ -29,29 +29,13 @@ abstract class Ability
     {
         $this->app = $app;
     }
-    //图文消息留言管理
-    //todo 打开已群发文章评论
-    //https://developers.weixin.qq.com/doc/offiaccount/Comments_management/Image_Comments_Management_Interface.html
-    //todo 关闭已群发文章评论
-    //https://developers.weixin.qq.com/doc/offiaccount/Comments_management/Image_Comments_Management_Interface.html
-    //todo 查看指定文章的评论数据
-    //https://developers.weixin.qq.com/doc/offiaccount/Comments_management/Image_Comments_Management_Interface.html
-    //todo 评论标记为精选
-    //https://developers.weixin.qq.com/doc/offiaccount/Comments_management/Image_Comments_Management_Interface.html
-    //todo 评论取消精选
-    //https://developers.weixin.qq.com/doc/offiaccount/Comments_management/Image_Comments_Management_Interface.html
-    //todo 删除评论
-    //todo 回复评论
-    //todo 删除回复
+
 
     //一次性订阅消息
     //todo 获取授权
     //todo 推送订阅模板消息到授权微信用户 https://api.weixin.qq.com/cgi-bin/message/template/subscribe?access_token=ACCESS_TOKEN
     //todo 获取微信公众号自动回复规则 https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Getting_Rules_for_Auto_Replies.html
 
-    //todo 微信卡券  这个比较复杂
-
-    //todo 微信门店 这个比较复杂
 
     //智能接口
     //todo 语义理解

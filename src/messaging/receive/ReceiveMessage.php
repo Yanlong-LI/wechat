@@ -33,100 +33,6 @@ abstract class ReceiveMessage implements Message
 {
 
     #region 回复相关
-    /**
-     * @var ReplyMessage
-     */
-    protected ?ReplyMessage $replyMessage = null;
-    /**
-     * 是否停止继续传播
-     * @var bool
-     * @see 标记为 true 后，后续的handle将不会被触发
-     */
-    protected bool $propagationStopped = false;
-
-    /**
-     * 是否已被处理
-     * @var bool
-     * @see 标记为 true 后，后续的handle将无法再次回复，可以重新标记为 false 用于强制覆盖已准备回复的内容
-     */
-    protected bool $processed = false;
-
-
-    /**
-     * 标记为停止继续传播
-     */
-    public function stopPropagation(): void
-    {
-        $this->propagationStopped = true;
-    }
-
-    /**
-     * 是否被标记为停止继续传播
-     * @return bool
-     */
-    public function isPropagationStopped()
-    {
-        return $this->propagationStopped;
-    }
-
-    /**
-     * 标记为已经处理回复
-     */
-    public function alreadyProcessed(): void
-    {
-        $this->propagationStopped = true;
-    }
-
-    /**
-     * 是否已标记为回复
-     * @return bool
-     */
-    public function isProcessed(): bool
-    {
-        return $this->processed;
-    }
-
-    /**
-     * 回复消息
-     * @param ReplyMessage $message
-     * @see 注意并非实时回复，而是等待流程结束后回复，即有可能被撤回发送
-     */
-    public function sendMessage(?ReplyMessage $message): void
-    {
-        //保存回复的消息
-        $this->replyMessage = $message;
-        //将事件标记为已处理回复
-        $this->alreadyProcessed();
-    }
-
-    /**
-     * 撤回准备发送的消息，撤回成功返回 true ,没有等待发送的消息返回 false
-     * @return bool
-     */
-    public function WithdrawMessage(): bool
-    {
-        if ($this->replyMessage) {
-            unset($this->replyMessage);
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * 获取回复消息
-     * @return ReplyMessage
-     */
-    public function getReplyMessage()
-    {
-        return $this->replyMessage;
-    }
-
-    #endregion
-
-    #region 收到消息的原始属性
-
-
-    // 消息类型集合
     protected static array $bind = [
         general\Image::TYPE => general\Image::class,
         general\Link::TYPE => general\Link::class,
@@ -155,7 +61,23 @@ abstract class ReceiveMessage implements Message
             event\ViewMiniprogram::EVENT => event\ViewMiniprogram::class,
         ]
     ];
-
+    /**
+     * @var ReplyMessage
+     */
+    protected ?ReplyMessage $replyMessage = null;
+    /**
+     * 是否停止继续传播
+     * @var bool
+     * @see 标记为 true 后，后续的handle将不会被触发
+     */
+    protected bool $propagationStopped = false;
+    /**
+     * 是否已被处理
+     * @var bool
+     * @see 标记为 true 后，后续的handle将无法再次回复，可以重新标记为 false 用于强制覆盖已准备回复的内容
+     */
+    protected bool $processed = false;
+    protected array $attribute = [];
 
     /**
      * @param string $MsgType
@@ -185,7 +107,81 @@ abstract class ReceiveMessage implements Message
         throw new WechatException("无法识别的消息类型:$MsgType:$Event:$EventKey");
     }
 
-    protected array $attribute = [];
+    /**
+     * 标记为停止继续传播
+     */
+    public function stopPropagation(): void
+    {
+        $this->propagationStopped = true;
+    }
+
+    /**
+     * 是否被标记为停止继续传播
+     * @return bool
+     */
+    public function isPropagationStopped()
+    {
+        return $this->propagationStopped;
+    }
+
+    /**
+     * 是否已标记为回复
+     * @return bool
+     */
+    public function isProcessed(): bool
+    {
+        return $this->processed;
+    }
+
+    /**
+     * 回复消息
+     * @param ReplyMessage $message
+     * @see 注意并非实时回复，而是等待流程结束后回复，即有可能被撤回发送
+     */
+    public function sendMessage(?ReplyMessage $message): void
+    {
+        //保存回复的消息
+        $this->replyMessage = $message;
+        //将事件标记为已处理回复
+        $this->alreadyProcessed();
+    }
+
+    #endregion
+
+    #region 收到消息的原始属性
+
+
+    // 消息类型集合
+
+    /**
+     * 标记为已经处理回复
+     */
+    public function alreadyProcessed(): void
+    {
+        $this->propagationStopped = true;
+    }
+
+    /**
+     * 撤回准备发送的消息，撤回成功返回 true ,没有等待发送的消息返回 false
+     * @return bool
+     */
+    public function WithdrawMessage(): bool
+    {
+        if ($this->replyMessage) {
+            unset($this->replyMessage);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 获取回复消息
+     * @return ReplyMessage
+     */
+    public function getReplyMessage()
+    {
+        return $this->replyMessage;
+    }
 
     public function __get($name)
     {

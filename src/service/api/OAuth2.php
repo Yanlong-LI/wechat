@@ -83,6 +83,51 @@ class OAuth2 extends Api
         exit();
     }
 
+    /**
+     * 移动授权获取用户基本信息 流程第2步 通过code换取APP授权access_token
+     * 网页授权获取用户基本信息 流程第2步 通过code换取网页授权access_token
+     * @param App $app
+     * @param string $code
+     * @return array
+     * [
+     *      "access_token"=>"ACCESS_TOKEN",
+     *      "expires_in"=>7200,    //access_token接口调用凭证超时时间，单位（秒）
+     *      "refresh_token"=>"REFRESH_TOKEN",
+     *      "openid"=>"OPENID",
+     *      "scope"=>"SCOPE"
+     * ]
+     * @throws WechatException
+     */
+    public static function getOauthAccessToken(App $app, string $code)
+    {
+
+        $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid={$app->appId}&secret={$app->appSecret}&code={$code}&grant_type=authorization_code";
+
+        return self::request($app, $url);
+    }
+
+    /**
+     * 网页授权获取用户基本信息 流程第4步 拉取用户信息
+     * @param App $app
+     * @param string $openId
+     * @param string $accessToken
+     * @return array
+     * [
+     *    'openid'      //用户的唯一标识
+     *    'nickname'    //用户昵称
+     *    'sex'         //用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+     *    'province'    //用户个人资料填写的省份
+     *    'city'        //普通用户个人资料填写的城市
+     *    'country'     //国家，如中国为CN
+     *    'headimgurl'  //用户头像，最后一个数值代表正方形头像大小（有0、46、64、96、132数值可选，0代表640*640正方形头像），用户没有头像时该项为空
+     * ]
+     * @throws WechatException
+     */
+    public static function getOauthUserInfo(App $app, string $openId, string $accessToken)
+    {
+        $url = "https://api.weixin.qq.com/sns/userinfo?access_token={$accessToken}&openid={$openId}&lang=zh_CN";
+        return self::request($app, $url);
+    }
 
     /**
      * 从url中移除code参数 例如 http://www.test.com?/oauth?code=1234&params=11 将返回 http://www.test.com?/oauth?params=11
@@ -151,29 +196,6 @@ class OAuth2 extends Api
     }
 
     /**
-     * 移动授权获取用户基本信息 流程第2步 通过code换取APP授权access_token
-     * 网页授权获取用户基本信息 流程第2步 通过code换取网页授权access_token
-     * @param App $app
-     * @param string $code
-     * @return array
-     * [
-     *      "access_token"=>"ACCESS_TOKEN",
-     *      "expires_in"=>7200,    //access_token接口调用凭证超时时间，单位（秒）
-     *      "refresh_token"=>"REFRESH_TOKEN",
-     *      "openid"=>"OPENID",
-     *      "scope"=>"SCOPE"
-     * ]
-     * @throws WechatException
-     */
-    public static function getOauthAccessToken(App $app, string $code)
-    {
-
-        $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid={$app->appId}&secret={$app->appSecret}&code={$code}&grant_type=authorization_code";
-
-        return self::request($app, $url);
-    }
-
-    /**
      * 网页授权获取用户基本信息 流程第3步 刷新access_token（如果需要）
      * @param App $app
      * @param $refreshToken
@@ -185,30 +207,6 @@ class OAuth2 extends Api
         $url = "https://api.weixin.qq.com/sns/oauth2/refresh_token?appid={$app->appId}&grant_type=refresh_token&refresh_token={$refreshToken}";
         return self::request($app, $url);
     }
-
-    /**
-     * 网页授权获取用户基本信息 流程第4步 拉取用户信息
-     * @param App $app
-     * @param string $openId
-     * @param string $accessToken
-     * @return array
-     * [
-     *    'openid'      //用户的唯一标识
-     *    'nickname'    //用户昵称
-     *    'sex'         //用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
-     *    'province'    //用户个人资料填写的省份
-     *    'city'        //普通用户个人资料填写的城市
-     *    'country'     //国家，如中国为CN
-     *    'headimgurl'  //用户头像，最后一个数值代表正方形头像大小（有0、46、64、96、132数值可选，0代表640*640正方形头像），用户没有头像时该项为空
-     * ]
-     * @throws WechatException
-     */
-    public static function getOauthUserInfo(App $app, string $openId, string $accessToken)
-    {
-        $url = "https://api.weixin.qq.com/sns/userinfo?access_token={$accessToken}&openid={$openId}&lang=zh_CN";
-        return self::request($app, $url);
-    }
-
 
     /**
      * 小程序登录 code换取 session_key 和 openid

@@ -70,6 +70,7 @@ class Menu extends Api
      *
      * 如果公众号是在公众平台官网通过网站功能发布菜单,type有可能为news、video、text、img
      *
+     * @param App $app
      * @return array
      *
      * array(
@@ -98,6 +99,7 @@ class Menu extends Api
 
     /**
      * 创建菜单
+     * @param App $app
      * @param array $data 菜单数据,例如:
      *
      * $data = array(
@@ -139,6 +141,7 @@ class Menu extends Api
 
     /**
      * 删除菜单
+     * @param App $app
      * @return array ["errcode"=>0,"errmsg"=>"ok"]
      * @throws WechatException
      */
@@ -150,6 +153,7 @@ class Menu extends Api
 
     /**
      * 创建个性化菜单
+     * @param App $app
      * @param array $data
      * @param array $matchRule 菜单匹配规则
      * [
@@ -174,7 +178,9 @@ class Menu extends Api
 
     /**
      * 删除个个化菜单，失败抛出异常
-     * @param $menuId
+     * @param App $app
+     * @param string $menuId
+     * @return array
      * @throws WechatException
      */
     public static function deleteConditional(App $app, string $menuId)

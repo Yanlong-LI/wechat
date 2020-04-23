@@ -31,6 +31,16 @@ class Request
     protected static $post;
 
     /**
+     * 检测是否存在指定请求参数
+     * @param $name
+     * @return bool
+     */
+    public static function has($name)
+    {
+        return isset(static::param()[$name]);
+    }
+
+    /**
      * @param null $name
      * @param null $default
      *
@@ -54,76 +64,6 @@ class Request
         return static::input(self::$params, $name, $default);
     }
 
-    /**
-     * 检测是否存在指定请求参数
-     * @param $name
-     * @return bool
-     */
-    public static function has($name)
-    {
-        return isset(static::param()[$name]);
-    }
-
-    /**
-     * 获取指定的参数
-     * @access public
-     * @param string|array $name 变量名
-     * @param string $type 变量类型
-     * @return mixed
-     */
-    public static function only($name, $type = 'param')
-    {
-
-        $param = static::$type();
-
-        if (is_string($name)) {
-            $name = explode(',', $name);
-        }
-
-        $item = [];
-        foreach ($name as $key => $val) {
-
-            if (is_int($key)) {
-                $default = null;
-                $key = $val;
-            } else {
-                $default = $val;
-            }
-
-            if (isset($param[$key])) {
-                $item[$key] = $param[$key];
-            } elseif (isset($default)) {
-                $item[$key] = $default;
-            }
-        }
-
-        return $item;
-    }
-
-    /**
-     * 排除指定参数获取
-     * @access public
-     * @param string|array $name 变量名
-     * @param string $type 变量类型
-     * @return mixed
-     */
-    public static function except($name, $type = 'param')
-    {
-        $param = static::$type();
-        if (is_string($name)) {
-            $name = explode(',', $name);
-        }
-
-        foreach ($name as $key) {
-            if (isset($param[$key])) {
-                unset($param[$key]);
-            }
-        }
-
-        return $param;
-    }
-
-
     public static function get($name = null, $default = null)
     {
         if (null === self::$get) {
@@ -131,49 +71,6 @@ class Request
         }
         return static::input(self::$get, $name, $default);
     }
-
-    /**
-     * @param null $name
-     * @param null $default
-     * @return mixed
-     */
-    public static function post($name = null, $default = null)
-    {
-        if (null === self::$post) {
-
-            $rawContentType = self::getContentType();
-            if (false !== ($pos = strpos($rawContentType, ';'))) {
-                $contentType = substr($rawContentType, 0, $pos);
-            } else {
-                $contentType = $rawContentType;
-            }
-            $data = null;
-            switch ($contentType) {
-                case 'application/json':
-                    $data = file_get_contents('php://input');
-                    $data = json_decode($data, true);
-                    break;
-                case 'application/xml':
-                case 'text/xml':
-                    $data = file_get_contents('php://input');
-                    $data = self::xmlToArray($data);
-                    break;
-                case 'text/plain':
-                case 'application/javascript':
-                case 'text/html':
-                    break;
-                case 'multipart/form-data':
-                default:
-                    $data = $_POST;
-                    break;
-
-            }
-            self::$post = $data;
-        }
-
-        return static::input(self::$post, $name, $default);
-    }
-
 
     /**
      * @param array $data
@@ -272,6 +169,122 @@ class Request
     }
 
     /**
+     * @param null $name
+     * @param null $default
+     * @return mixed
+     */
+    public static function post($name = null, $default = null)
+    {
+        if (null === self::$post) {
+
+            $rawContentType = self::getContentType();
+            if (false !== ($pos = strpos($rawContentType, ';'))) {
+                $contentType = substr($rawContentType, 0, $pos);
+            } else {
+                $contentType = $rawContentType;
+            }
+            $data = null;
+            switch ($contentType) {
+                case 'application/json':
+                    $data = file_get_contents('php://input');
+                    $data = json_decode($data, true);
+                    break;
+                case 'application/xml':
+                case 'text/xml':
+                    $data = file_get_contents('php://input');
+                    $data = self::xmlToArray($data);
+                    break;
+                case 'text/plain':
+                case 'application/javascript':
+                case 'text/html':
+                    break;
+                case 'multipart/form-data':
+                default:
+                    $data = $_POST;
+                    break;
+
+            }
+            self::$post = $data;
+        }
+
+        return static::input(self::$post, $name, $default);
+    }
+
+    public static function getContentType()
+    {
+        if (isset($_SERVER['CONTENT_TYPE'])) {
+            return $_SERVER['CONTENT_TYPE'];
+        }
+
+        return 'multipart/form-data';
+    }
+
+    public static function xmlToArray($xml)
+    {
+        $xml = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
+        return json_decode(json_encode($xml), true);
+    }
+
+    /**
+     * 获取指定的参数
+     * @access public
+     * @param string|array $name 变量名
+     * @param string $type 变量类型
+     * @return mixed
+     */
+    public static function only($name, $type = 'param')
+    {
+
+        $param = static::$type();
+
+        if (is_string($name)) {
+            $name = explode(',', $name);
+        }
+
+        $item = [];
+        foreach ($name as $key => $val) {
+
+            if (is_int($key)) {
+                $default = null;
+                $key = $val;
+            } else {
+                $default = $val;
+            }
+
+            if (isset($param[$key])) {
+                $item[$key] = $param[$key];
+            } elseif (isset($default)) {
+                $item[$key] = $default;
+            }
+        }
+
+        return $item;
+    }
+
+    /**
+     * 排除指定参数获取
+     * @access public
+     * @param string|array $name 变量名
+     * @param string $type 变量类型
+     * @return mixed
+     */
+    public static function except($name, $type = 'param')
+    {
+        $param = static::$type();
+        if (is_string($name)) {
+            $name = explode(',', $name);
+        }
+
+        foreach ($name as $key) {
+            if (isset($param[$key])) {
+                unset($param[$key]);
+            }
+        }
+
+        return $param;
+    }
+
+    /**
      * 生成请求令牌
      * @access public
      *
@@ -285,15 +298,6 @@ class Request
         $str .= uniqid($str);
 
         return strtoupper(md5($str));
-    }
-
-    public static function getContentType()
-    {
-        if (isset($_SERVER['CONTENT_TYPE'])) {
-            return $_SERVER['CONTENT_TYPE'];
-        }
-
-        return 'multipart/form-data';
     }
 
     /**
@@ -347,12 +351,6 @@ class Request
 
         //后设置
         self::$params[$name] = $value;
-    }
-
-    public static function xmlToArray($xml)
-    {
-        $xml = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
-        return json_decode(json_encode($xml), true);
     }
 
 }

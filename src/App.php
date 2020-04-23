@@ -140,20 +140,20 @@ abstract class App
     public function addAbility($abilityName, $ability = null)
     {
         if (is_string($abilityName)) {
-            $ability = [
+            $abilityList = [
                 basename(str_replace('\\', '/', $abilityName)) => $ability
             ];
         } elseif (is_array($abilityName)) {
-            $ability = [];
+            $abilityList = [];
             // 获取基础名称 我比较懒
             foreach ($abilityName as $_name => $_ability) {
-                $ability[basename(str_replace('\\', '/', $_name))] = $_ability;
+                $abilityList[basename(str_replace('\\', '/', $_name))] = $_ability;
             }
         } else {
             throw new WechatException("App 启用功能必须是功能对象或功能类");
         }
 
-        $this->ability += $ability;
+        $this->ability = $abilityList + $this->ability;
     }
 
 }

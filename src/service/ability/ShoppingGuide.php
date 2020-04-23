@@ -13,17 +13,18 @@
  *   Author: Yanlongli <jobs@yanlongli.com>
  *   Date:   2020/4/23
  *   IDE:    PhpStorm
- *   Desc:   微信卡包
+ *   Desc:   微信导购
  */
 declare(strict_types=1);
 
 namespace yanlongli\wechat\service\ability;
 
 /**
- * Class CardBag
+ * Class ShoppingGuide
  * @package yanlongli\wechat\service\ability
+ * @link https://developers.weixin.qq.com/doc/offiaccount/Shopping_Guide/guide.html
  */
-class CardBag extends Ability
+class ShoppingGuide extends Ability
 {
-
+    //todo 微信导购
 }

@@ -28,6 +28,15 @@ class MessageService extends Api
 {
     const Typing = 'Typing';
     const CancelTyping = 'CancelTyping';
+    const MSG_STATUS_SEND_SUCCESS = 'SEND_SUCCESS';
+    const MSG_STATUS_SENDING = 'SENDING';
+    const MSG_STATUS_SEND_FAIL = 'SEND_FAIL';
+    const MSG_STATUS_DELETE = 'DELETE';
+    const SPEED_80W = 0;
+    const SPEED_60W = 1;
+    const SPEED_45W = 2;
+    const SPEED_30W = 3;
+    const SPEED_10W = 4;
 
     /**
      * 客服消息接口，主动给粉丝发消息。当用户和公众号产生特定动作的交互的48小时内有效。
@@ -94,17 +103,18 @@ class MessageService extends Api
      * 3、类似地，服务号在一个月内，使用is_to_all为true群发的次数，加上公众平台官网群发（不管本次群发是对全体还是对某个分组）的次数，最多只能是4次。
      * 4、设置is_to_all为false时是可以多次群发的，但每个用户只会收到最多4条，且这些群发不会进入历史消息列表。
      *
-     * @param string|null $tagId
+     * @param App $app
+     * @param int $tagId
      * @param MassMessage $message
      * @param bool $isToAll 选择true该消息群发给所有用户
      * @return array
      * @throws WechatException
      */
-    public static function sendAll(App $app, ?string $tagId, MassMessage $message, bool $isToAll = false)
+    public static function sendAll(App $app, MassMessage $message, ?int $tagId = null, bool $isToAll = false)
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/message/mass/sendall?access_token=ACCESS_TOKEN';
         $data = array(
-            'filter' => array('is_to_all' => (bool)$isToAll, 'tag_id' => (string)$tagId),
+            'filter' => array('is_to_all' => (bool)$isToAll, 'tag_id' => $tagId),
         );
         if ($isToAll) {
             unset($data['filter']['tag_id']);
@@ -118,6 +128,7 @@ class MessageService extends Api
 
     /**
      * 根据OpenID列表群发
+     * @param App $app
      * @param array $openIds
      * @param MassMessage $message
      * @return array
@@ -126,9 +137,9 @@ class MessageService extends Api
     public static function sendAllWithOpenIds(App $app, array $openIds, MassMessage $message)
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/message/mass/send?access_token=ACCESS_TOKEN';
-        $data = array(
+        $data = [
             'touser' => $openIds,
-        );
+        ];
         $data = array_merge($data, $message->jsonData());
         $data['msgtype'] = $message->type();
 
@@ -136,7 +147,24 @@ class MessageService extends Api
     }
 
     /**
+     * 查询群发消息发送状态
+     * @param App $app
+     * @param int $msgId
+     * @return array
+     * @throws WechatException
+     */
+    public static function getMassStatus(App $app, int $msgId)
+    {
+        $postData = [
+            'msg_id' => $msgId
+        ];
+        $url = 'https://api.weixin.qq.com/cgi-bin/message/mass/get?access_token=ACCESS_TOKEN';
+        return self::request($app, $url, $postData);
+    }
+
+    /**
      * 删除群发
+     * @param App $app
      * @param string $msgId
      * @return array
      * @throws WechatException
@@ -149,6 +177,7 @@ class MessageService extends Api
 
     /**
      * 预览(发给某个openid)
+     * @param App $app
      * @param string $openId
      * @param MassMessage $message
      * @return array
@@ -170,6 +199,7 @@ class MessageService extends Api
 
     /**
      * 预览(发给某个微信号)
+     * @param App $app
      * @param string $wxname
      * @param MassMessage $message
      * @return array
@@ -190,7 +220,8 @@ class MessageService extends Api
 
     /**
      * 查询群发消息发送状态
-     * @param $msgId
+     * @param App $app
+     * @param string $msgId
      * @return array
      * @throws WechatException
      */
@@ -200,4 +231,37 @@ class MessageService extends Api
         return self::request($app, $url, array('msg_id' => $msgId));
     }
 
+    /**
+     * 获取群发速度
+     * @param App $app
+     * @return array
+     * @throws WechatException
+     */
+    public static function getMassSpeed(App $app)
+    {
+        $url = 'https://api.weixin.qq.com/cgi-bin/message/mass/speed/get?access_token=ACCESS_TOKEN';
+        return self::request($app, $url);
+    }
+
+    /**
+     * 设置群发速度
+     * @param App $app
+     * @param int $speed speed    0    80w/分钟    1    60w/分钟    2    45w/分钟    3    30w/分钟    4    10w/分钟
+     * @return array
+     * @throws WechatException
+     */
+    public static function setMassSpeed(App $app, int $speed = self::SPEED_80W)
+    {
+        $postData = [
+            'speed' => $speed
+        ];
+        $url = 'https://api.weixin.qq.com/cgi-bin/message/mass/speed/get?access_token=ACCESS_TOKEN';
+        return self::request($app, $url, $postData);
+    }
+
+    public static function getCurrentAutoReplyInfo(App $app)
+    {
+        $url = 'https://api.weixin.qq.com/cgi-bin/get_current_autoreply_info?access_token=ACCESS_TOKEN';
+        return self::request($app, $url);
+    }
 }

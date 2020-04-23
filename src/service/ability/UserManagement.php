@@ -29,6 +29,16 @@ class UserManagement extends Ability
 
     //创建标签
 
+    const LANG_ZH_CN = UserManagementApi::LANG_ZH_CN;
+
+    //获取标签列表
+    const LANG_ZH_TW = UserManagementApi::LANG_ZH_TW;
+
+    //编辑标签
+    const LANG_EN = UserManagementApi::LANG_EN;
+
+    //删除标签
+
     /**
      * 创建标签
      * @param $tagName
@@ -40,19 +50,19 @@ class UserManagement extends Ability
         return UserTagService::createTag($this->app, $tagName);
     }
 
-    //获取标签列表
+    //标签下粉丝列表
 
     /**
      * 获取公众号已创建的标签列表
      * @return array
      * @throws WechatException
      */
-    public function tags()
+    public function getTags()
     {
         return UserTagService::tags($this->app);
     }
 
-    //编辑标签
+    //批量为用户打标签
 
     /**
      * 编辑标签 标签改名
@@ -66,7 +76,7 @@ class UserManagement extends Ability
         return UserTagService::tagRename($this->app, $tagId, $tagName);
     }
 
-    //删除标签
+    //批量为用户取消标签
 
     /**
      * 删除标签
@@ -79,7 +89,7 @@ class UserManagement extends Ability
         return UserTagService::delTag($this->app, $tagId);
     }
 
-    //标签下粉丝列表
+    //获取用户身上的标签
 
     /**
      * 标签下粉丝列表
@@ -87,12 +97,12 @@ class UserManagement extends Ability
      * @return array
      * @throws WechatException
      */
-    public function usersForTag(int $tagId)
+    public function getUsersByTag(int $tagId)
     {
         return UserTagService::tagUsers($this->app, $tagId);
     }
 
-    //批量为用户打标签
+    //为用户设置备注 服务号
 
     /**
      * 批量为用户打标签
@@ -106,8 +116,6 @@ class UserManagement extends Ability
         return UserTagService::batchTagging($this->app, $tagId, $openIds);
     }
 
-    //批量为用户取消标签
-
     /**
      * 批量为用户取消标签
      * @param int $tagId
@@ -120,8 +128,6 @@ class UserManagement extends Ability
         return UserTagService::batchUnTagging($this->app, $tagId, $openIds);
     }
 
-    //获取用户身上的标签
-
     /**
      * 获取用户身上的标签
      * @param string $openId openID
@@ -132,11 +138,6 @@ class UserManagement extends Ability
     {
         return UserTagService::getUserTags($this->app, $openId);
     }
-
-    //为用户设置备注 服务号
-    const LANG_ZH_CN = UserManagementApi::LANG_ZH_CN;
-    const LANG_ZH_TW = UserManagementApi::LANG_ZH_TW;
-    const LANG_EN = UserManagementApi::LANG_EN;
 
     /**
      * 为用户设置备注 服务号
@@ -163,7 +164,7 @@ class UserManagement extends Ability
      * @return array
      * @throws WechatException
      */
-    public function batchGetUsers(array $openIds, string $lang = self::LANG_ZH_CN)
+    public function getUsersInfo(array $openIds, string $lang = self::LANG_ZH_CN)
     {
         return UserManagementApi::batchGet($this->app, $openIds, $lang);
     }
@@ -176,7 +177,7 @@ class UserManagement extends Ability
      * @return array
      * @throws WechatException
      */
-    public function getAllUser(string $nextOpenId = '')
+    public function getUsers(string $nextOpenId = '')
     {
         return UserManagementApi::all($this->app, $nextOpenId);
     }
@@ -189,7 +190,7 @@ class UserManagement extends Ability
      * @return array
      * @throws WechatException
      */
-    public function getBlackList(string $nextOpenId = '')
+    public function getUsersByBlackList(string $nextOpenId = '')
     {
         return UserManagementApi::getBlackList($this->app, $nextOpenId);
     }

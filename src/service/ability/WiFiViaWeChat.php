@@ -11,27 +11,20 @@
  *   See the Mulan PSL v1 for more details.
  *
  *   Author: Yanlongli <jobs@yanlongli.com>
- *   Date:   2020/4/21
+ *   Date:   2020/4/23
  *   IDE:    PhpStorm
- *   Desc:   素材管理
+ *   Desc:   微信连Wifi
  */
 declare(strict_types=1);
 
 namespace yanlongli\wechat\service\ability;
 
 /**
- * Class Material
+ * Class WiFiViaWeChat
  * @package yanlongli\wechat\service\ability
- * @link https://developers.weixin.qq.com/doc/offiaccount/Asset_Management/New_temporary_materials.html
+ * @link https://developers.weixin.qq.com/doc/offiaccount/WiFi_via_WeChat/Developer_guide.html
  */
-class Material extends Ability
+class WiFiViaWeChat extends Ability
 {
-    //todo 新增临时素材
-    //todo 获取临时素材
-    //todo 新增永久素材
-    //todo 获取永久素材
-    //todo 删除永久素材
-    //todo 修改永久图文素材
-    //todo 获取素材总数
-    //todo 获取素材列表
+    //todo 微信连wifi
 }

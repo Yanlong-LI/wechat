@@ -11,27 +11,37 @@
  *   See the Mulan PSL v1 for more details.
  *
  *   Author: Yanlongli <jobs@yanlongli.com>
- *   Date:   2020/4/21
+ *   Date:   2020/4/23
  *   IDE:    PhpStorm
- *   Desc:   素材管理
+ *   Desc:   _
  */
 declare(strict_types=1);
 
 namespace yanlongli\wechat\service\ability;
 
+
+use yanlongli\wechat\messaging\contract\MassMessage as MassMessageContract;
+use yanlongli\wechat\service\api\MessageService;
+use yanlongli\wechat\WechatException;
+
 /**
- * Class Material
+ * 群发增强版 服务号使用
+ * Class MassMessagePlus
  * @package yanlongli\wechat\service\ability
- * @link https://developers.weixin.qq.com/doc/offiaccount/Asset_Management/New_temporary_materials.html
  */
-class Material extends Ability
+class MassMessagePlus extends MassMessage
 {
-    //todo 新增临时素材
-    //todo 获取临时素材
-    //todo 新增永久素材
-    //todo 获取永久素材
-    //todo 删除永久素材
-    //todo 修改永久图文素材
-    //todo 获取素材总数
-    //todo 获取素材列表
+    //根据OpenID列表群发 -- 服务号可用
+
+    /**
+     * 根据OpenID列表群发
+     * @param array $openIds
+     * @param MassMessageContract $message
+     * @return array
+     * @throws WechatException
+     */
+    public function sendByOpenIds(array $openIds, MassMessageContract $message)
+    {
+        return MessageService::sendAllWithOpenIds($this->app, $openIds, $message);
+    }
 }

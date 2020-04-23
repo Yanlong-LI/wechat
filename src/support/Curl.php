@@ -19,6 +19,11 @@ use CURLFile;
 class Curl
 {
 
+    public static function get($url)
+    {
+        return self::execute($url, 'get');
+    }
+
     /**
      * @param $url
      * @param string $method 'post' or 'get'
@@ -77,11 +82,6 @@ class Curl
 
         curl_close($ch);
         return $output;
-    }
-
-    public static function get($url)
-    {
-        return self::execute($url, 'get');
     }
 
     public static function post($url, $postData)

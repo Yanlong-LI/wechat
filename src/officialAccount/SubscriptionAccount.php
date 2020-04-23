@@ -21,6 +21,7 @@ namespace yanlongli\wechat\officialAccount;
 
 
 use yanlongli\wechat\service\ability\CustomerServiceManagement;
+use yanlongli\wechat\service\ability\MassMessage;
 use yanlongli\wechat\service\ability\Menu;
 use yanlongli\wechat\service\ability\UserManagement;
 
@@ -29,6 +30,7 @@ use yanlongli\wechat\service\ability\UserManagement;
  * @package yanlongli\wechat\officialAccount
  * @property UserManagement $UserManagement 用户管理
  * @property CustomerServiceManagement $CustomService 多客服管理
+ * @property MassMessage $MassMessage 消息群发
  * @property Menu $Menu 菜单管理
  */
 class SubscriptionAccount extends PersonalSubscriptionAccount
@@ -43,7 +45,8 @@ class SubscriptionAccount extends PersonalSubscriptionAccount
         $this->addAbility([
             'Menu' => Menu::class,
             'CustomService' => CustomerServiceManagement::class,
-            UserManagement::class => UserManagement::class
+            UserManagement::class => UserManagement::class,
+            MassMessage::class => MassMessage::class,
         ]);
     }
 }

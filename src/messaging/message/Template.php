@@ -81,12 +81,12 @@ class Template implements TemplateMessage
     {
         $jumpOption = [];
         if (isset($this->url)) {
-            $jumpOption += [
-                'url' => $this->url
-            ];
+            $jumpOption = [
+                    'url' => $this->url
+                ] + $jumpOption;
         }
         if (isset($this->miniprogram)) {
-            $jumpOption += $this->miniprogram;
+            $jumpOption = $this->miniprogram + $jumpOption;
         }
 
         return [

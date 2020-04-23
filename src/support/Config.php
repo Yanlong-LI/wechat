@@ -145,6 +145,34 @@ class Config
     }
 
     /**
+     * 递归合并两个数组
+     * 如果要合并的两个数组的对应键并非都是数组（无法合并），则以第二个数组的键值覆盖第一个数组对应的键值
+     * @param array $array1 主数组
+     * @param array $array2 附加数组
+     * @return array 返回主数组
+     */
+    public static function arrayMerge($array1, $array2)
+    {
+        if (!is_array($array1))
+            $array1 = [];
+        if (!is_array($array2)) {
+            $array2 = [];
+        }
+        /**
+         * 遍历数组2
+         */
+        foreach ($array2 as $key2 => $item2) {
+            // 如果附加数组的某个键的值是数组 ，并且 主数组的对应键的值也是数组 那么合并这两个数组
+            if (is_array($item2) && isset($array1[$key2]) && is_array($array1[$key2])) {
+                $array1[$key2] = static::arrayMerge($array1[$key2], $item2);
+            } else {
+                $array1[$key2] = $array2[$key2];
+            }
+        }
+        return $array1;
+    }
+
+    /**
      * 设置配置参数 name为数组则为批量设置
      * @access public
      * @param string|array $name 配置参数名（支持无限层级 .号分割）
@@ -198,33 +226,5 @@ class Config
             return static::$config[$name];
         }
         return [];
-    }
-
-    /**
-     * 递归合并两个数组
-     * 如果要合并的两个数组的对应键并非都是数组（无法合并），则以第二个数组的键值覆盖第一个数组对应的键值
-     * @param array $array1 主数组
-     * @param array $array2 附加数组
-     * @return array 返回主数组
-     */
-    public static function arrayMerge($array1, $array2)
-    {
-        if (!is_array($array1))
-            $array1 = [];
-        if (!is_array($array2)) {
-            $array2 = [];
-        }
-        /**
-         * 遍历数组2
-         */
-        foreach ($array2 as $key2 => $item2) {
-            // 如果附加数组的某个键的值是数组 ，并且 主数组的对应键的值也是数组 那么合并这两个数组
-            if (is_array($item2) && isset($array1[$key2]) && is_array($array1[$key2])) {
-                $array1[$key2] = static::arrayMerge($array1[$key2], $item2);
-            } else {
-                $array1[$key2] = $array2[$key2];
-            }
-        }
-        return $array1;
     }
 }
